@@ -1,54 +1,92 @@
-# React + TypeScript + Vite
+# 🚀 ELECVITER
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a personal exploration of building a desktop application using a modern stack consisting of **Electron**, **Vite**, **Webpack**, **React**, and **TypeScript**. The goal is to understand how these technologies integrate and work together to create a cross-platform desktop app.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Tech Stack
 
-## Expanding the ESLint configuration
+| Technology          | Description |
+|---------------------|-------------|
+| **Electron**        | Framework for building desktop apps using JavaScript, HTML, and CSS |
+| **Vite**            | The Build Tool to provide a faster and leaner development for the Web |
+| **React**           | Component-based UI library |
+| **TypeScript**      | Strongly-typed superset of JavaScript |
+| **pnpm**            | Fast and disk space-efficient JavaScript package manager |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+
+## 📁 Project Structure
+
+```bash
+starter-electron-forge/
+├── src/
+│   ├── electron/
+│   │   ├── main.ts         
+│   │   └── tsconfig.json   
+│   └── ui/                 
+│       ├── assets/
+│       ├── components/ 
+│       ├── App.css         
+│       ├── App.tsx         
+│       ├── index.css       
+│       ├── main.tsx        
+│       └── vite-env.d.ts   
+├── electron-builder.json   
+├── index.html              
+├── tsconfig.app.json       
+├── tsconfig.json
+├── tsconfig.node.json
+├── package.json
+└── README.md               
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## 🚀 Getting Started
+
+Install dependencies using pnpm:
+
+```bash
+pnpm install
 ```
+
+Start the react-app in development mode:
+
+```bash
+pnpm run dev:react
+```
+
+
+Start the electron-app in development mode:
+
+```bash
+pnpm run dev:electron
+```
+
+
+## 📦 Building & Packaging
+To package the application into a distributable format (e.g., .exe, .dmg, etc.):
+
+```bash
+pnpm make
+```
+
+
+## 📚 References
+
+* [Vite Documentation](https://vite.dev/guide/)
+* [Electron Main Process API](https://www.electronjs.org/docs/latest/api/app)
+* [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+* [React Documentation](https://react.dev/)
+* [pnpm Documentation](https://pnpm.js.org/docs/)
+
+
+
+## ✍️ Personal Notes
+This project helped me gain a deeper understanding of how modern front-end tools can be combined with Electron to create powerful desktop applications. Using pnpm significantly improved installation speed and reduced node_modules size through symlinks and content-addressable storage.
+
+
+
+
+
+
