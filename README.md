@@ -1,6 +1,6 @@
 # 🚀 ELECVITER
 
-This project is a personal exploration of building a desktop application using a modern stack consisting of **Electron**, **Vite**, **Webpack**, **React**, and **TypeScript**. The goal is to understand how these technologies integrate and work together to create a cross-platform desktop app.
+This project is a personal exploration of building a desktop application using a modern stack consisting of **Electron**, **Vite**, **React**, and **TypeScript**. The goal is to understand how these technologies integrate and work together to create a cross-platform desktop app.
 
 
 ## 🛠️ Tech Stack
@@ -18,7 +18,7 @@ This project is a personal exploration of building a desktop application using a
 ## 📁 Project Structure
 
 ```bash
-starter-electron-forge/
+electviter/
 ├── src/
 │   ├── electron/
 │   │   ├── main.ts         
@@ -65,12 +65,27 @@ pnpm run dev:electron
 
 
 ## 📦 Building & Packaging
-To package the application into a distributable format (e.g., .exe, .dmg, etc.):
+
+To package the application into a distributable format (e.g., .msi, .AppImage, .dmg, etc.):
+
+Mac
 
 ```bash
-pnpm make
+pnpm run dist:mac
 ```
 
+
+Linux
+
+```bash
+pnpm run dist:linux
+```
+
+Windows
+
+```bash
+pnpm run dist:win
+```
 
 ## 📚 References
 
