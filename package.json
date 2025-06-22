@@ -5,8 +5,9 @@
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
+    "dev": "concurrently \"pnpm dev:react\" \"pnpm dev:electron\"",
     "dev:react": "vite",
-    "dev:electron": "electron .",
+    "dev:electron": "pnpm run transpile:electron; cross-env NODE_ENV=development electron .",
     "transpile:electron": "tsc -p src/electron/tsconfig.json",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -16,14 +17,18 @@
     "dist:win": "pnpm run transpile:electron && pnpm run build && electron-builder --win --x64"
   },
   "dependencies": {
+    "os-utils": "^0.0.14",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@types/os-utils": "^0.0.4",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
+    "concurrently": "^9.2.0",
+    "cross-env": "^7.0.3",
     "electron": "^36.5.0",
     "electron-builder": "^26.0.12",
     "eslint": "^9.25.0",
