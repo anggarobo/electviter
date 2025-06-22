@@ -40,10 +40,11 @@ electviter/
 ├── electron-builder.json   
 ├── index.html              
 ├── package.json
-├──  README.md               
+├── README.md               
 ├── tsconfig.app.json       
 ├── tsconfig.json
 ├── tsconfig.node.json
+├── types.d.ts
 └── vite.config.ts               
 ```
 
