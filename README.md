@@ -22,7 +22,11 @@ electviter/
 ├── src/
 │   ├── electron/
 │   │   ├── main.ts         
-│   │   └── tsconfig.json   
+│   │   ├── pathResolver.ts         
+│   │   ├── preload.cts         
+│   │   ├── resourceManager.ts         
+│   │   ├── tsconfig.json         
+│   │   └── util.ts   
 │   └── ui/                 
 │       ├── assets/
 │       ├── components/ 
@@ -33,11 +37,12 @@ electviter/
 │       └── vite-env.d.ts   
 ├── electron-builder.json   
 ├── index.html              
+├── package.json
+└── README.md               
 ├── tsconfig.app.json       
 ├── tsconfig.json
 ├── tsconfig.node.json
-├── package.json
-└── README.md               
+└── vite.config.ts               
 ```
 
 
