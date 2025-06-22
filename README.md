@@ -27,6 +27,7 @@ electviter/
 │   │   ├── resourceManager.ts         
 │   │   ├── tsconfig.json         
 │   │   └── util.ts   
+│   │              
 │   └── ui/                 
 │       ├── assets/
 │       ├── components/ 
@@ -35,10 +36,11 @@ electviter/
 │       ├── index.css       
 │       ├── main.tsx        
 │       └── vite-env.d.ts   
+│   
 ├── electron-builder.json   
 ├── index.html              
 ├── package.json
-└── README.md               
+├──  README.md               
 ├── tsconfig.app.json       
 ├── tsconfig.json
 ├── tsconfig.node.json

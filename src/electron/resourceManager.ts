@@ -2,6 +2,7 @@ import fs from 'fs';
 import osUtils from 'os-utils';
 import os from 'os';
 import type { BrowserWindow } from 'electron';
+import { ipcWebContentsSend } from './util.js';
 
 
 const POLLING_INTERVAL = 5000; // Default polling interval in milliseconds
@@ -14,22 +15,25 @@ const POLLING_INTERVAL = 5000; // Default polling interval in milliseconds
 export function resourcesManager(mainWindow: BrowserWindow) {
     setInterval(async () => {
         const sysInfo = await getSystemInfo()
-        mainWindow.webContents.send('statistics', sysInfo);
-        // console.log(cpuUsage);
+        ipcWebContentsSend('statistics', mainWindow.webContents, sysInfo);
     }, POLLING_INTERVAL);
 }
 
 
-function getSystemInfo() {
+function getSystemInfo(): Promise<Statistics> {
     return new Promise((resolve) => {
         osUtils.cpuUsage((cpuUsage) => {
             const staticData = getStaticData();
-            resolve({ cpuUsage, ...staticData });
+            const sysInfo: Statistics = {
+                cpuUsage,
+                ...staticData
+            }
+            resolve(sysInfo);
         });
     });
 }
 
-export function getStaticData() {
+export function getStaticData(): Omit<Statistics, 'cpuUsage'> {
     const storage = getStorageInfo();
     const cpuModel = os.cpus()[0].model;
     const memory = getMemoryInfo();
@@ -45,7 +49,7 @@ export function getStaticData() {
     }
 }
 
-function getMemoryInfo() {
+function getMemoryInfo(): MemoryInfo {
     const memoryUsage = 1 - osUtils.freememPercentage();
     const usedMemory = osUtils.totalmem() * memoryUsage;
     const totalMemory = osUtils.totalmem();
@@ -59,7 +63,7 @@ function getMemoryInfo() {
     
 }
 
-function getStorageInfo() {
+function getStorageInfo(): StorageInfo {
     // requires node 18.0 or higher
     const storagePath = process.platform === "win32" ? 'C://' : '/';
     const stats = fs.statSync(storagePath);

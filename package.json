@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "main": "dist-electron/main.js",
+  "author": "anggarobo",
+  "license": "MIT",
+  "description": "A Electron app with React and Vite",
   "scripts": {
     "dev": "concurrently \"pnpm dev:react\" \"pnpm dev:electron\"",
     "dev:react": "vite",
