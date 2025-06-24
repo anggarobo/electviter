@@ -109,7 +109,8 @@ pnpm run dist:win
 This project helped me gain a deeper understanding of how modern front-end tools can be combined with Electron to create powerful desktop applications. Using pnpm significantly improved installation speed and reduced node_modules size through symlinks and content-addressable storage.
 
 
-
+## Screenshot
+![image info](./images/Screenshot_2025-06-25_02-54-23.png)
 
 
 
