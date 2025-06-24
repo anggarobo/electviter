@@ -6,9 +6,10 @@ function App() {
   const [statistic, setStatistic] = useState<Statistics | undefined>(undefined)
 
   useEffect(() => {
-    window.electron.subscribeStatistics((data) => {
-      setStatistic(data)
+    const unsub = window.electron.subscribeStatistics((data) => {
+      setStatistic(data);
     })
+    return unsub;
   }, [])
 
   return (

@@ -19,6 +19,7 @@ type Statistics = {
     storage: StorageInfo;
     memory: MemoryInfo;
     uptime: number;
+    mode: 'development' | 'production';
 }
 
 type EventPayloadMapping = {
@@ -26,9 +27,11 @@ type EventPayloadMapping = {
     getStaticData: Omit<Statistics, 'cpuUsage'>;
 }
 
+type UnsubscribeFunction = () => void;
+
 interface Window {
     electron: {
-        subscribeStatistics: (callback: (statistics: Statistics) => void) => void;
+        subscribeStatistics: (callback: (statistics: Statistics) => void) => UnsubscribeFunction;
         getStaticData: () => Promise<Omit<Statistics, 'cpuUsage'>>;
     }
 }

@@ -2,7 +2,7 @@ import fs from 'fs';
 import osUtils from 'os-utils';
 import os from 'os';
 import type { BrowserWindow } from 'electron';
-import { ipcWebContentsSend } from './util.js';
+import { ipcWebContentsSend, isDev } from './util.js';
 
 
 const POLLING_INTERVAL = 5000; // Default polling interval in milliseconds
@@ -12,7 +12,7 @@ const POLLING_INTERVAL = 5000; // Default polling interval in milliseconds
  * @description This module provides functionality to monitor system resources such as CPU and memory usage.
  * It uses the os-utils library to fetch system information.
  */
-export function resourcesManager(mainWindow: BrowserWindow) {
+export function pollResources(mainWindow: BrowserWindow) {
     setInterval(async () => {
         const sysInfo = await getSystemInfo()
         ipcWebContentsSend('statistics', mainWindow.webContents, sysInfo);
@@ -46,6 +46,7 @@ export function getStaticData(): Omit<Statistics, 'cpuUsage'> {
         storage,
         memory,
         uptime: os.uptime(),
+        mode: isDev() ? 'development' : 'production',
     }
 }
 

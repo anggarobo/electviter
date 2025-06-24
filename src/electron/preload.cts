@@ -1,9 +1,9 @@
-import electron from "electron";
+import electron, { IpcRendererEvent } from "electron";
 
 electron.contextBridge.exposeInMainWorld('electron', {
-    subscribeStatistics: (callback: (statistics: Statistics) => void) => {
+    subscribeStatistics: (callback) => {
         // electron.ipcRenderer.on('statistics', (_, data) => {
-        ipcOn('statistics', (data) => {
+        return ipcOn('statistics', (data) => {
             callback(data);
         })
     },
@@ -21,5 +21,7 @@ export function ipcOn<Key extends keyof EventPayloadMapping>(
     key: Key,
     callback: (payload: EventPayloadMapping[Key]) => void
 ) {
-    electron.ipcRenderer.on(key, (_, payload) => callback(payload));
+    const cb = (_: IpcRendererEvent, payload: EventPayloadMapping[Key]) => callback(payload);
+    electron.ipcRenderer.on(key, cb);
+    return () => electron.ipcRenderer.off(key, cb);
 }

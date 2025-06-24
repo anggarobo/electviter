@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 // import path from 'path';
 import { ipcMainHandle, isDev } from './util.js';
-import { getStaticData, resourcesManager } from './resourceManager.js';
+import { getStaticData, pollResources } from './resourceManager.js';
 import { INDEX_PATH, PRELOAD_PATH } from './pathResolver.js';
 
 app.on("ready", () => {
@@ -18,7 +18,7 @@ app.on("ready", () => {
     }
 
     // mainWindow.webContents.openDevTools()
-    resourcesManager(mainWindow);
+    pollResources(mainWindow);
 
     ipcMainHandle("getStaticData", () => {
         return getStaticData();
