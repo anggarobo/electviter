@@ -57,9 +57,10 @@ function getMemoryInfo(): MemoryInfo {
     const freeMemory = totalMemory - usedMemory;
     const freeMemoryPercentage = (freeMemory / totalMemory) * 100;
     return {
-        total: `${totalMemory.toFixed(2)} MB`,
+        total: totalMemory,
         used: `${usedMemory.toFixed(2)} MB (${(memoryUsage * 100).toFixed(2)}%)`,
         free: `${freeMemory.toFixed(2)} MB (${freeMemoryPercentage.toFixed(2)}%)`,
+        usage: memoryUsage,
     };
     
 }
@@ -72,5 +73,5 @@ function getStorageInfo(): StorageInfo {
     const free = fs.statSync(storagePath).blksize * fs.statSync(storagePath).blksize;
     const used = total - free; 
     
-    return { total, free, used };
+    return { total, free, used, usage: 1 - free / total };
 } 

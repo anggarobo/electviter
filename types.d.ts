@@ -2,12 +2,14 @@ type StorageInfo = {
     total: number;
     free: number;
     used: number;
+    usage: number;
 }
 
 type MemoryInfo = {
-    total: string;
+    total: number;
     free: string;
     used: string;
+    usage: number;
 }
 
 type Statistics = {
@@ -22,9 +24,14 @@ type Statistics = {
     mode: 'development' | 'production';
 }
 
+type ViewChangeEvent = 'CPU' | 'RAM' | 'STORAGE'
+type FrameWindowAction = 'CLOSE' | 'MAXIMIZE' | 'MINIMIZE';
+
 type EventPayloadMapping = {
     statistics: Statistics;
     getStaticData: Omit<Statistics, 'cpuUsage'>;
+    changeView: ViewChangeEvent;
+    sendFrameWindowAction: FrameWindowAction;
 }
 
 type UnsubscribeFunction = () => void;
@@ -33,5 +40,7 @@ interface Window {
     electron: {
         subscribeStatistics: (callback: (statistics: Statistics) => void) => UnsubscribeFunction;
         getStaticData: () => Promise<Omit<Statistics, 'cpuUsage'>>;
+        subscribeChangeView: (callback: (view: ViewChangeEvent) => void) => UnsubscribeFunction;
+        sendFrameWindowAction: (action: FrameWindowAction) => void;
     }
 }

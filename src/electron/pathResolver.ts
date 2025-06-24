@@ -14,5 +14,13 @@ function getStaticPath() {
     return path.join(app.getAppPath(), "/dist-react/index.html")
 }
 
+
 export const INDEX_PATH = getStaticPath()
 export const PRELOAD_PATH = getPreloadPath();
+export const ASSETS_PATH = (() => {
+    return path.join(
+        app.getAppPath(),
+        isDev() ? '.' : '..',
+        '/src/assets'
+    )
+})()
