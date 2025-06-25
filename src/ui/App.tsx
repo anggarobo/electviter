@@ -3,7 +3,7 @@ import "./App.css";
 import useStatistics from "./hooks/useStatistics";
 import useStaticData from "./hooks/useStaticData";
 import { Chart } from "./components/Charts";
-import Header from "./components/Header";
+// import Header from "./components/Header";
 import ChartItem from "./components/Charts/Item";
 
 function App() {
@@ -45,7 +45,7 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
+      {/* <Header /> */}
       <div className="main">
         <div>
           <ChartItem

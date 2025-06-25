@@ -9,14 +9,14 @@ export function createMenu(mainWindow: BrowserWindow) {
                 type: "submenu",
                 submenu: [
                     {
-                        label: "Quit",
-                        click: app.quit,
-                    },
-                    {
                         label: "DevTools",
                         click: () => mainWindow.webContents.openDevTools(),
                         visible: isDev(),
-                    }
+                    },
+                    {
+                        label: "Quit",
+                        click: app.quit,
+                    },
                 ]
             },
             {

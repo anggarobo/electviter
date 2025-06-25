@@ -1,17 +1,19 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, nativeImage } from 'electron';
 // import path from 'path';
 import { ipcMainHandle, ipcMainOn, isDev } from './util.js';
 import { getStaticData, pollResources } from './resourceManager.js';
-import { INDEX_PATH, PRELOAD_PATH } from './pathResolver.js';
+import { ASSETS_PATH, INDEX_PATH, PRELOAD_PATH } from './pathResolver.js';
 import { createMenu } from './menu.js';
 import { createTray } from './tray.js';
+import path from 'path';
 
 app.on("ready", () => {
     const mainWindow = new BrowserWindow({
         webPreferences: {
             preload: PRELOAD_PATH,
         },
-        frame: false,
+        icon: path.join(ASSETS_PATH, 'unnamed.png')
+        // frame: false,
     })
     
     if (isDev()) {
@@ -51,6 +53,7 @@ app.on("ready", () => {
     createTray(mainWindow)
     handleCloseEvents(mainWindow);
     createMenu(mainWindow)
+    setTaskbar(mainWindow)
 })
 
 function handleCloseEvents(mainWindow: BrowserWindow) {
@@ -73,4 +76,8 @@ function handleCloseEvents(mainWindow: BrowserWindow) {
     mainWindow.on("show", () => {
         willClose = false;
     })
+}
+
+function setTaskbar (mainWindow: BrowserWindow) {
+    mainWindow.setIcon(path.join(ASSETS_PATH, 'unnamed.png'))
 }
