@@ -1,10 +1,12 @@
 header {
   width: 100%;
   text-align: left;
-  padding: 0.5rem;
+  padding: 0.15rem 0.25rem;
   box-sizing: border-box;
   background-color: #181818;
   -webkit-app-region: drag;
+  border-radius: 12px 12px 0 0;
+  display: flex;
 }
 
 header button {
@@ -14,18 +16,40 @@ header button {
   height: 1rem;
   margin: 0.25rem;
   -webkit-app-region: no-drag;
+  padding: 0.05rem;
 }
 
 #close {
   background-color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#close:hover {
+  background-color: crimson;
 }
 
 #minimize {
   background-color: yellow;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#minimize:hover {
+  background-color: goldenrod;
 }
 
 #maximize {
   background-color: lime;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#maximize:hover {
+  background-color: green;
 }
 
 .main {
@@ -37,10 +61,11 @@ header button {
   max-width: 900px;
   margin: auto;
   margin-top: 4rem;
+  height: 16rem;
 }
 
 .mainGrid {
-  height: 10rem;
+  height: 16rem;
   padding: 0.5rem;
 }
 

@@ -7,7 +7,6 @@ export function createTray(mainWindow: BrowserWindow) {
     const tray = new Tray(
         path.join(
             ASSETS_PATH,
-            // process.platform === "darwin" ? "iconTemplate.png" : "icon.png"
             "unnamed.png"
         )
     )

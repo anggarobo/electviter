@@ -1,14 +1,12 @@
 type StorageInfo = {
     total: number;
     free: number;
-    used: number;
     usage: number;
 }
 
 type MemoryInfo = {
     total: number;
-    free: string;
-    used: string;
+    free: number;
     usage: number;
 }
 

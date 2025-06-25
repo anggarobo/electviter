@@ -5,7 +5,7 @@ import type { BrowserWindow } from 'electron';
 import { ipcWebContentsSend, isDev } from './util.js';
 
 
-const POLLING_INTERVAL = 5000; // Default polling interval in milliseconds
+const POLLING_INTERVAL = 1000; // Default polling interval in milliseconds
 
 /**
  * @file resourceManager.ts
@@ -51,27 +51,20 @@ export function getStaticData(): Omit<Statistics, 'cpuUsage'> {
 }
 
 function getMemoryInfo(): MemoryInfo {
-    const memoryUsage = 1 - osUtils.freememPercentage();
-    const usedMemory = osUtils.totalmem() * memoryUsage;
-    const totalMemory = osUtils.totalmem();
-    const freeMemory = totalMemory - usedMemory;
-    const freeMemoryPercentage = (freeMemory / totalMemory) * 100;
-    return {
-        total: totalMemory,
-        used: `${usedMemory.toFixed(2)} MB (${(memoryUsage * 100).toFixed(2)}%)`,
-        free: `${freeMemory.toFixed(2)} MB (${freeMemoryPercentage.toFixed(2)}%)`,
-        usage: memoryUsage,
-    };
+    const usage = 1 - osUtils.freememPercentage();
+    const total = osUtils.totalmem();
+    const free = osUtils.freemem()
+
+    return { total, free, usage };
     
 }
 
 function getStorageInfo(): StorageInfo {
     // requires node 18.0 or higher
     const storagePath = process.platform === "win32" ? 'C://' : '/';
-    const stats = fs.statSync(storagePath);
-    const total = stats.size;
-    const free = fs.statSync(storagePath).blksize * fs.statSync(storagePath).blksize;
-    const used = total - free; 
+    const stats = fs.statfsSync(storagePath);
+    const total = stats.bsize * stats.blocks;
+    const free = stats.bsize * stats.bfree
     
-    return { total, free, used, usage: 1 - free / total };
+    return { total, free, usage: 1 - free / total };
 } 

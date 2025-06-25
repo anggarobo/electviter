@@ -20,6 +20,7 @@
     "dist:win": "pnpm run transpile:electron && pnpm run build && electron-builder --win --x64"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "os-utils": "^0.0.14",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

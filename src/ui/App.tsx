@@ -1,32 +1,38 @@
-import { useEffect, useMemo, useState } from 'react'
-import './App.css'
-import useStatistics from './hooks/useStatistics';
-import useStaticData from './hooks/useStaticData';
-import { Chart } from './components/Charts';
+import { useEffect, useMemo, useState } from "react";
+import "./App.css";
+import useStatistics from "./hooks/useStatistics";
+import useStaticData from "./hooks/useStaticData";
+import { Chart } from "./components/Charts";
+import Header from "./components/Header";
+import ChartItem from "./components/Charts/Item";
 
 function App() {
   const staticData = useStaticData();
   const statistics = useStatistics(10);
-  const [activeView, setActiveView] = useState<ViewChangeEvent>('CPU');
+  const [activeView, setActiveView] = useState<ViewChangeEvent>("CPU");
+
   const cpuUsages = useMemo(
     () => statistics.map((stat) => stat.cpuUsage),
     [statistics]
   );
+
   const ramUsages = useMemo(
     () => statistics.map((stat) => stat.memory.usage),
     [statistics]
   );
+
   const storageUsages = useMemo(
     () => statistics.map((stat) => stat.storage.usage),
     [statistics]
   );
+
   const activeUsages = useMemo(() => {
     switch (activeView) {
-      case 'CPU':
+      case "CPU":
         return cpuUsages;
-      case 'RAM':
+      case "RAM":
         return ramUsages;
-      case 'STORAGE':
+      case "STORAGE":
         return storageUsages;
     }
   }, [activeView, cpuUsages, ramUsages, storageUsages]);
@@ -35,30 +41,33 @@ function App() {
     return window.electron.subscribeChangeView((view) => setActiveView(view));
   }, []);
 
+  console.log(statistics)
+
   return (
     <div className="App">
       <Header />
       <div className="main">
         <div>
-          <SelectOption
-            onClick={() => setActiveView('CPU')}
+          <ChartItem
+            onClick={() => setActiveView("CPU")}
             title="CPU"
             view="CPU"
-            subTitle={staticData?.cpuModel ?? ''}
+            subTitle={staticData?.cpuModel ?? ""}
             data={cpuUsages}
           />
-          <SelectOption
-            onClick={() => setActiveView('RAM')}
+          <ChartItem
+            onClick={() => setActiveView("RAM")}
             title="RAM"
             view="RAM"
-            subTitle={(staticData?.memory.total.toString() ?? '') + ' GB'}
+            subTitle={(Math.floor((staticData?.memory?.total || 0) / 1024)) + " GB"}
             data={ramUsages}
           />
-          <SelectOption
-            onClick={() => setActiveView('STORAGE')}
+          <ChartItem
+            onClick={() => setActiveView("STORAGE")}
             title="STORAGE"
             view="STORAGE"
-            subTitle={(staticData?.storage.total.toString() ?? '') + ' GB'}
+            // subTitle={(staticData?.storage.total.toString() ?? "") + " GB"}
+            subTitle={(Math.floor((staticData?.storage?.total || 0) / 1_000_000_000)) + " GB"}
             data={storageUsages}
           />
         </div>
@@ -71,46 +80,7 @@ function App() {
         </div>
       </div>
     </div>
-  )
-}
-
-function SelectOption(props: {
-  title: string;
-  view: ViewChangeEvent;
-  subTitle: string;
-  data: number[];
-  onClick: () => void;
-}) {
-  return (
-    <button className="selectOption" onClick={props.onClick}>
-      <div className="selectOptionTitle">
-        <div>{props.title}</div>
-        <div>{props.subTitle}</div>
-      </div>
-      <div className="selectOptionChart">
-        <Chart selectedView={props.view} data={props.data} maxDataPoints={10} />
-      </div>
-    </button>
   );
 }
 
-function Header() {
-  return (
-    <header>
-      <button
-        id="close"
-        onClick={() => window.electron.sendFrameWindowAction('CLOSE')}
-      />
-      <button
-        id="minimize"
-        onClick={() => window.electron.sendFrameWindowAction('MINIMIZE')}
-      />
-      <button
-        id="maximize"
-        onClick={() => window.electron.sendFrameWindowAction('MAXIMIZE')}
-      />
-    </header>
-  );
-}
-
-export default App
+export default App;
