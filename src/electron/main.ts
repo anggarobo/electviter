@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeImage } from 'electron';
+import { app, BrowserWindow, globalShortcut, nativeImage } from 'electron';
 // import path from 'path';
 import { ipcMainHandle, ipcMainOn, isDev } from './util.js';
 import { getStaticData, pollResources } from './resourceManager.js';
@@ -54,6 +54,20 @@ app.on("ready", () => {
     handleCloseEvents(mainWindow);
     createMenu(mainWindow)
     setTaskbar(mainWindow)
+
+    // Global Keyboard Shortcut
+    globalShortcut.register('CmdOrCtrl+R', () => {
+        mainWindow.reload();
+    });
+
+    globalShortcut.register('CmdOrCtrl+I', () => {
+        mainWindow.webContents.openDevTools();
+    });
+})
+
+app.on("will-quit", () => {
+    // unregister all shortcut when app quits
+    globalShortcut.unregisterAll()
 })
 
 function handleCloseEvents(mainWindow: BrowserWindow) {
