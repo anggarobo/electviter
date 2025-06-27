@@ -61,7 +61,7 @@ app.on("ready", () => {
     });
 
     globalShortcut.register('CmdOrCtrl+I', () => {
-        mainWindow.webContents.openDevTools();
+        mainWindow.webContents.toggleDevTools();
     });
 })
 
