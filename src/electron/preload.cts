@@ -1,4 +1,4 @@
-import electron, { IpcRendererEvent } from "electron";
+import electron, { ipcRenderer, IpcRendererEvent } from "electron";
 
 electron.contextBridge.exposeInMainWorld('electron', {
     subscribeStatistics: (callback) => {
@@ -15,6 +15,9 @@ electron.contextBridge.exposeInMainWorld('electron', {
       callback(view);
     }),
     sendFrameWindowAction: (payload) => ipcSend('sendFrameWindowAction', payload),
+    openFileDialog: () => ipcRenderer.invoke('dialog:openFile'),
+    readFile: (filePath) => ipcRenderer.invoke('file:read', filePath),
+    writeFile: (filePath, content) => ipcRenderer.invoke('file:write', { filePath, content })
 } satisfies Window['electron']);
 
 export function ipcInvoke<Key extends keyof EventPayloadMapping>(
