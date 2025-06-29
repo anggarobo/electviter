@@ -11,7 +11,7 @@
     "dev": "concurrently \"pnpm dev:react\" \"pnpm dev:electron\"",
     "dev:react": "vite",
     "dev:electron": "pnpm run transpile:electron; cross-env NODE_ENV=development electron .",
-    "transpile:electron": "tsc -p src/electron/tsconfig.json",
+    "transpile:electron": "tsc -p src/node/tsconfig.json",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -28,6 +28,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@mantine/core": "^8.1.2",
+    "@mantine/hooks": "^8.1.2",
     "@types/os-utils": "^0.0.4",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
@@ -40,6 +42,9 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "postcss": "^8.5.6",
+    "postcss-preset-mantine": "^1.17.0",
+    "postcss-simple-vars": "^7.0.1",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5"
