@@ -1,12 +1,8 @@
 // tell to typescript what it should do with exactly those file inside the electron directory
 {
-    // "compilerOptions": {
-    //     "strict": true, // require strict type-checking options (null save)
-    //     "target": "esnext", // tell typescript to generate ECMAScript version
-    //     "module": "nodenext", // tell typescript to require ECMAScript as input (include .js file imports)
-    //     "outDir": "../../dist-electron", // define where to put the generated js
-    //     "skipLibCheck": true, // skip errors from dependencies,
-    //     "types": ["../../types"]
-    // },   
-    "extends": ["../utils/tsconfig.json"],
+    "extends": ["../../config/tsconfig.json"],
+    "compilerOptions": {
+      "outDir": "../../dist-electron", // define where to put the generated js
+      "types": ["../../types"]
+    },
 }

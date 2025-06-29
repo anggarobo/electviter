@@ -39,5 +39,5 @@
     }
   },
   "include": ["src"],
-  "exclude": ["src/main"]
+  "exclude": ["config", "src/node", "src/main"]
 }

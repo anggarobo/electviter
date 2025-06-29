@@ -11,7 +11,7 @@
     "dev": "concurrently \"pnpm dev:react\" \"pnpm dev:electron\"",
     "dev:react": "vite",
     "dev:electron": "pnpm run transpile:electron; cross-env NODE_ENV=development electron .",
-    "transpile:electron": "tsc -p src/node/tsconfig.json",
+    "transpile:electron": "tsc -p config/tsconfig.json",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
