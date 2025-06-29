@@ -1,9 +1,7 @@
 import { ComputerDesktopIcon, TrashIcon, FolderArrowDownIcon, VideoCameraIcon, PhotoIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { Code, Group, ScrollArea } from '@mantine/core';
 import { LinksGroup } from './LinksGroup';
-// import { UserButton } from '../UserButton/UserButton';
-// import { Logo } from './Logo';
-import Logo from 'app/assets/react.svg'
+// import Logo from 'app/assets/react.svg'
 
 import classes from './Sidebar.module.css';
 
@@ -57,8 +55,8 @@ export function Sidebar() {
     <nav className={classes.navbar}>
       <div className={classes.header}>
         <Group justify="space-between">
-          <Logo style={{ width: 120 }} />
-          <Code fw={700}>v3.1.2</Code>
+          {/* <Logo style={{ width: 120 }} /> */}
+          <Code fw={700}>Electviter</Code>
         </Group>
       </div>
 
@@ -66,9 +64,6 @@ export function Sidebar() {
         <div className={classes.linksInner}>{links}</div>
       </ScrollArea>
 
-      {/* <div className={classes.footer}>
-        <UserButton />
-      </div> */}
     </nav>
   );
 }

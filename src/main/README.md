@@ -1,5 +1,3 @@
-Here is a possible `README.md` description:
-
 **Main Process**
 ================
 

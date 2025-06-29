@@ -1,7 +1,6 @@
 
 import { useState } from 'react';
-import { CalendarIcon, ChevronRightIcon } from '@heroicons/react/16/solid';
-// import { IconCalendarStats, IconChevronRight } from '@tabler/icons-react';
+import { ChevronRightIcon } from '@heroicons/react/16/solid';
 import { Box, Collapse, Group, Text, ThemeIcon, UnstyledButton } from '@mantine/core';
 import classes from './LinksGroup.module.css';
 
@@ -46,23 +45,5 @@ export function LinksGroup({ icon: Icon, label, initiallyOpened, links }: LinksG
       </UnstyledButton>
       {hasLinks ? <Collapse in={opened}>{items}</Collapse> : null}
     </>
-  );
-}
-
-const mockdata = {
-  label: 'Releases',
-  icon: CalendarIcon,
-  links: [
-    { label: 'Upcoming releases', link: '/' },
-    { label: 'Previous releases', link: '/' },
-    { label: 'Releases schedule', link: '/' },
-  ],
-};
-
-export function NavbarLinksGroup() {
-  return (
-    <Box mih={220} p="md">
-      <LinksGroup {...mockdata} />
-    </Box>
   );
 }
