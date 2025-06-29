@@ -16,8 +16,8 @@ The main process is the entry point of the Electron application, and it is respo
 **Files**
 --------
 
-* `main.js`: The entry point of the main process, responsible for creating and managing the application's windows and handling system events.
-* `preload.js`: A script that is loaded before the main window's HTML file, used to expose APIs to the renderer process.
+* `main.ts`: The entry point of the main process, responsible for creating and managing the application's windows and handling system events.
+* `preload.ts`: A script that is loaded before the main window's HTML file, used to expose APIs to the renderer process.
 
 **Note**
 -------
