@@ -12,7 +12,7 @@ app.on("ready", () => {
         webPreferences: {
             preload: PRELOAD_PATH,
         },
-        icon: path.join(ASSETS_PATH, 'unnamed.png')
+        icon: path.join(ASSETS_PATH, 'electviter_48x.png')
         // frame: false,
     })
     
@@ -129,5 +129,5 @@ function handleCloseEvents(mainWindow: BrowserWindow) {
 }
 
 function setTaskbar (mainWindow: BrowserWindow) {
-    mainWindow.setIcon(path.join(ASSETS_PATH, 'unnamed.png'))
+    mainWindow.setIcon(path.join(ASSETS_PATH, 'electviter_48x.png'))
 }

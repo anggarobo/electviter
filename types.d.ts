@@ -41,4 +41,9 @@ interface Window {
         subscribeChangeView: (callback: (view: ViewChangeEvent) => void) => UnsubscribeFunction;
         sendFrameWindowAction: (action: FrameWindowAction) => void;
     }
+    api: {
+        ipc: {
+            console: () => void
+        }
+    }
 }

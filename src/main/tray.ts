@@ -6,7 +6,7 @@ export function createTray(mainWindow: BrowserWindow) {
     const tray = new Tray(
         path.join(
             ASSETS_PATH,
-            "unnamed.png"
+            "electviter_48x.png"
         )
     )
 
