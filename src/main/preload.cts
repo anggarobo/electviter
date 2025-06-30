@@ -1,4 +1,25 @@
 import electron, { ipcRenderer, IpcRendererEvent } from "electron";
+// import { preloadAPI } from "./preloadAPI.cjs";
+
+(async () => {
+    const osx = await invoke("osx")
+    const dir = await invoke("dir")
+    electron.contextBridge.exposeInMainWorld("api", {
+        osx,
+        ipc: {
+            console: function (): void {
+                throw new Error("Function not implemented.");
+            }
+        },
+        dir
+    } satisfies Window['api']);
+})()
+
+export function invoke<Key extends keyof ApiEvent>(
+    key: Key,
+): Promise<ApiEvent[Key]> {
+    return electron.ipcRenderer.invoke(key);
+}
 
 electron.contextBridge.exposeInMainWorld('electron', {
     subscribeStatistics: (callback) => {
@@ -15,10 +36,11 @@ electron.contextBridge.exposeInMainWorld('electron', {
       callback(view);
     }),
     sendFrameWindowAction: (payload) => ipcSend('sendFrameWindowAction', payload),
-    openFileDialog: () => ipcRenderer.invoke('dialog:openFile'),
-    readFile: (filePath) => ipcRenderer.invoke('file:read', filePath),
-    writeFile: (filePath, content) => ipcRenderer.invoke('file:write', { filePath, content })
+    // openFileDialog: () => ipcRenderer.invoke('dialog:openFile'),
+    // readFile: (filePath) => ipcRenderer.invoke('file:read', filePath),
+    // writeFile: (filePath, content) => ipcRenderer.invoke('file:write', { filePath, content })
 } satisfies Window['electron']);
+
 
 export function ipcInvoke<Key extends keyof EventPayloadMapping>(
     key: Key,

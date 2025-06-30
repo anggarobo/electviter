@@ -8,7 +8,7 @@
         "dist-electron/preload.cjs", 
         "src/assets/**"
     ],
-    "icon": "./assets/electviter_48x.png",
+    "icon": "./assets/unnamed.png",
     "mac": {
         "target": "dmg"
     },

@@ -110,7 +110,7 @@ This project helped me gain a deeper understanding of how modern front-end tools
 
 
 ## Screenshot
-![image info](./assets/showcases/Screenshot_2025-06-30_03-10-36.png)
+![image info](./assets/showcases/Screenshot_2025-07-01_03-10-49.png)
 
 
 

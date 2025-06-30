@@ -1,9 +1,12 @@
-import { ComputerDesktopIcon, TrashIcon, FolderArrowDownIcon, VideoCameraIcon, PhotoIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
+import { ComputerDesktopIcon, FolderIcon, TrashIcon, FolderArrowDownIcon, VideoCameraIcon, PhotoIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { Code, Group, ScrollArea } from '@mantine/core';
 import { LinksGroup } from './LinksGroup';
 // import Logo from 'app/assets/react.svg'
 
 import classes from './Sidebar.module.css';
+import { useEffect, useState } from 'react';
+import type { Directory } from './type';
+
 
 const mockdata = [
   { label: 'Desktop', icon: ComputerDesktopIcon },
@@ -48,8 +51,17 @@ const mockdata = [
   },
 ];
 
-export function Sidebar() {
-  const links = mockdata.map((item) => <LinksGroup {...item} key={item.label} />);
+export default function Sidebar() {
+  const [links, setLinks] = useState<Directory[]>([])
+  useEffect(() => {
+      const dir = window.api.dir
+      const directories = dir.map(d => ({
+        ...d,
+        icon: FolderIcon
+      }))
+      setLinks(directories)
+  }, [])
+  // const links = mockdata.map((item) => <LinksGroup {...item} key={item.label} />);
 
   return (
     <nav className={classes.navbar}>
@@ -61,7 +73,9 @@ export function Sidebar() {
       </div>
 
       <ScrollArea className={classes.links}>
-        <div className={classes.linksInner}>{links}</div>
+        <div className={classes.linksInner}>
+          { links.map(link => <LinksGroup key={link.name} icon={link.icon} label={link.name} />) }
+        </div>
       </ScrollArea>
 
     </nav>

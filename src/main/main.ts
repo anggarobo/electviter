@@ -6,6 +6,8 @@ import { createMenu } from './menu.js';
 import { createTray } from './tray.js';
 import path from 'path';
 import fs from 'fs';
+import { readFolderContents } from './dir.js';
+import osx from './utils/os.js';
 
 app.on("ready", () => {
     const mainWindow = new BrowserWindow({
@@ -65,40 +67,42 @@ app.on("ready", () => {
     });
 
     // handle select file request
-    ipcMain.handle("dialog:openFile", async () => {
-        const result = await dialog.showOpenDialog(mainWindow, {
-            properties: ["openFile"],
-            filters: [
-                { name: "Text files", extensions: ["txt", "md"] },
-                { name: "All files", extensions: ["*"] }
-            ]
-        })
+    // ipcMain.handle("dialog:openFile", async () => {
+    //     const result = await dialog.showOpenDialog(mainWindow, {
+    //         properties: ["openFile"],
+    //         filters: [
+    //             { name: "Text files", extensions: ["txt", "md"] },
+    //             { name: "All files", extensions: ["*"] }
+    //         ]
+    //     })
 
-        return result.filePaths
-    })
+    //     return result.filePaths
+    // })
 
-    // handle read file request
-    ipcMain.handle('file:read', async (ev, filePath) => {
-        try {
-            return fs.readFileSync(filePath, 'utf-8')
-        } catch (error) {
-            dialog.showErrorBox('Error', 'failed to read teh file')
-            return ''
-        }
-    })
+    // // handle read file request
+    // ipcMain.handle('file:read', async (ev, filePath) => {
+    //     try {
+    //         return fs.readFileSync(filePath, 'utf-8')
+    //     } catch (error) {
+    //         dialog.showErrorBox('Error', 'failed to read teh file')
+    //         return ''
+    //     }
+    // })
 
-    // handle write file request
-    ipcMain.handle('file:write', async (_, { filePath, content }) => {
-        try {
-            fs.writeFileSync(filePath, content, 'utf-8')
-            return 'File writtern succesfully'
-        } catch (error) {
-            dialog.showErrorBox('Error', 'failed to read teh file')
-            return 'Failed to write the file'
-        }
-    })
+    // // handle write file request
+    // ipcMain.handle('file:write', async (_, { filePath, content }) => {
+    //     try {
+    //         fs.writeFileSync(filePath, content, 'utf-8')
+    //         return 'File writtern succesfully'
+    //     } catch (error) {
+    //         dialog.showErrorBox('Error', 'failed to read teh file')
+    //         return 'Failed to write the file'
+    //     }
+    // })
 
     // ipcMainHandle("")
+    osx()
+    readFolderContents('/', process.platform)
 })
 
 app.on("will-quit", () => {

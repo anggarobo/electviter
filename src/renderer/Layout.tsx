@@ -1,5 +1,5 @@
 import { createTheme, MantineProvider } from '@mantine/core';
-import type { PropsWithChildren } from 'react';
+import { useEffect, type PropsWithChildren } from 'react';
 import '@mantine/core/styles.css';
 
 export default function Layout({ children }: PropsWithChildren) {
@@ -7,6 +7,11 @@ export default function Layout({ children }: PropsWithChildren) {
         fontFamily: 'Open Sans, sans-serif',
         primaryColor: 'cyan',
     });
+
+    useEffect(() => {
+        const api = window.api
+        console.log(api)
+    }, [])
 
     return (
         <MantineProvider theme={theme}>

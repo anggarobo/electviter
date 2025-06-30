@@ -34,6 +34,24 @@ type EventPayloadMapping = {
 
 type UnsubscribeFunction = () => void;
 
+type Osx = {
+    platform: NodeJS.Platform;
+    isMac: boolean
+    isLinux: boolean
+    isWindows: boolean
+}
+
+type Dir = {
+    name: string
+    path: string
+    parentPath: string
+}
+
+type ApiEvent = {
+    osx: Osx,
+    dir: Array<Dir>
+}
+
 interface Window {
     electron: {
         subscribeStatistics: (callback: (statistics: Statistics) => void) => UnsubscribeFunction;
@@ -44,6 +62,8 @@ interface Window {
     api: {
         ipc: {
             console: () => void
-        }
-    }
+        },
+        osx: Osx,
+        dir: Array<Dir>
+    },
 }

@@ -5,13 +5,13 @@ import useStaticData from "./hooks/useStaticData";
 import { Chart } from "./components/Charts";
 // import Header from "./components/Header";
 import ChartItem from "./components/Charts/Item";
-import useFile from "./hooks/useFile";
+// import useFile from "./hooks/useFile";
 
 function App() {
   const staticData = useStaticData();
   const statistics = useStatistics(10);
   const [activeView, setActiveView] = useState<ViewChangeEvent>("CPU");
-  const { onOpenFile, onSaveFile } = useFile()
+  // const { onOpenFile, onSaveFile } = useFile()
 
   const cpuUsages = useMemo(
     () => statistics.map((stat) => stat.cpuUsage),
@@ -84,9 +84,9 @@ function App() {
 
 
       <br /><br /><br />
-      <button onClick={onOpenFile} id="openFileBtn">Open File</button>
+      {/* <button onClick={onOpenFile} id="openFileBtn">Open File</button>
       <button onClick={onSaveFile} id="saveFileBtn">Save File</button>
-      <pre id="fileContent"></pre>
+      <pre id="fileContent"></pre> */}
     </div>
   );
 }
