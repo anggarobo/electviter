@@ -2,10 +2,10 @@ import electron, { ipcRenderer, IpcRendererEvent } from "electron";
 // import { preloadAPI } from "./preloadAPI.cjs";
 
 (async () => {
-    const osx = await invoke("osx")
+    const platform = await invoke("platform")
     const dir = await invoke("dir")
     electron.contextBridge.exposeInMainWorld("api", {
-        osx,
+        platform,
         ipc: {
             console: function (): void {
                 throw new Error("Function not implemented.");

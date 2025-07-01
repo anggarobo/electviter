@@ -5,8 +5,8 @@ import { ASSETS_PATH, INDEX_PATH, PRELOAD_PATH } from './pathResolver.js';
 import { createMenu } from './menu.js';
 import { createTray } from './tray.js';
 import path from 'path';
-import fs from 'fs';
-import { readFolderContents } from './dir.js';
+// import fs from 'fs';
+import { readFolderContents, readSidePane } from './dir.js';
 import osx from './utils/os.js';
 
 app.on("ready", () => {
@@ -102,7 +102,7 @@ app.on("ready", () => {
 
     // ipcMainHandle("")
     osx()
-    readFolderContents('/', process.platform)
+    readSidePane(process.platform)
 })
 
 app.on("will-quit", () => {

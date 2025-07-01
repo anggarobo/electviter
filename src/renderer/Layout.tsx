@@ -1,6 +1,7 @@
 import { createTheme, MantineProvider } from '@mantine/core';
 import { useEffect, type PropsWithChildren } from 'react';
 import '@mantine/core/styles.css';
+import BasicAppShell from './components/AppShell';
 
 export default function Layout({ children }: PropsWithChildren) {
     const theme = createTheme({
@@ -15,7 +16,9 @@ export default function Layout({ children }: PropsWithChildren) {
 
     return (
         <MantineProvider theme={theme}>
-            {children}
+            <BasicAppShell>
+                {children}
+            </BasicAppShell>
         </MantineProvider>
     )
 }

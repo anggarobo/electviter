@@ -34,7 +34,7 @@ type EventPayloadMapping = {
 
 type UnsubscribeFunction = () => void;
 
-type Osx = {
+type OsPlatform = {
     platform: NodeJS.Platform;
     isMac: boolean
     isLinux: boolean
@@ -48,7 +48,7 @@ type Dir = {
 }
 
 type ApiEvent = {
-    osx: Osx,
+    platform: OsPlatform,
     dir: Array<Dir>
 }
 
@@ -63,7 +63,7 @@ interface Window {
         ipc: {
             console: () => void
         },
-        osx: Osx,
+        platform: OsPlatform,
         dir: Array<Dir>
     },
 }
