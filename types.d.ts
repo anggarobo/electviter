@@ -42,14 +42,22 @@ type OsPlatform = {
 }
 
 type Dir = {
-    name: string
-    path: string
-    parentPath: string
+    isFile: boolean;
+    isDirectory: boolean;
+    isBlockDevice: boolean;
+    isCharacterDevice: boolean;
+    isSymbolicLink: boolean;
+    isFIFO: boolean;
+    isSocket: boolean;
+    name: Name | string;
+    parentPath: string;
+    path: string;
 }
 
 type ApiEvent = {
     platform: OsPlatform,
-    dir: Array<Dir>
+    dir: Dirent<string>[]
+    openFile: Dirent<string>[]
 }
 
 interface Window {
@@ -62,8 +70,9 @@ interface Window {
     api: {
         ipc: {
             console: () => void
+            openFolder: (path: string) => Promise<Dirent<string>[]>
         },
         platform: OsPlatform,
-        dir: Array<Dir>
+        dir: Dirent<string>[]
     },
 }

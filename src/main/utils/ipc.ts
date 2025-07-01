@@ -3,15 +3,15 @@ import env from "./env.js";
 import { pathToFileURL } from "url";
 import { INDEX_PATH } from "../pathResolver.js";
 
-export function apiIpcMainHandle<Key extends keyof ApiEvent>(
+export function apiIpcMainHandle<Key extends keyof ApiEvent, P = unknown>(
   key: Key,
-  handler: () => ApiEvent[Key]
+  handler: (payload?: P) => ApiEvent[Key]
 ) {
-  ipcMain.handle(key, (event) => {
+  ipcMain.handle(key, (event, payload) => {
     if (event.senderFrame) {
       validateEventFrame(event.senderFrame);
     }
-    return handler();
+    return handler(payload);
   });
 }
 

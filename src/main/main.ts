@@ -6,8 +6,9 @@ import { createMenu } from './menu.js';
 import { createTray } from './tray.js';
 import path from 'path';
 // import fs from 'fs';
-import { readFolderContents, readSidePane } from './dir.js';
+import { openFile, readSidePane } from './dir.js';
 import osx from './utils/os.js';
+import { apiIpcMainHandle } from './utils/ipc.js';
 
 app.on("ready", () => {
     const mainWindow = new BrowserWindow({
@@ -103,6 +104,12 @@ app.on("ready", () => {
     // ipcMainHandle("")
     osx()
     readSidePane(process.platform)
+
+    ipcMain.removeHandler("openFile");
+    ipcMain.handle("openFile", async (_, payload) => {
+        const response = await openFile(payload)
+        return response
+    })
 })
 
 app.on("will-quit", () => {

@@ -1,0 +1,5 @@
+.box-content--x:hover {
+    background-color: rgba(46, 117, 175, 0.262);
+    border-radius: 4px;
+    cursor: default;
+}

@@ -9,16 +9,18 @@ import electron, { ipcRenderer, IpcRendererEvent } from "electron";
         ipc: {
             console: function (): void {
                 throw new Error("Function not implemented.");
-            }
+            },
+            openFolder: (path) => invoke<"openFile", string>("openFile", path)
         },
         dir
     } satisfies Window['api']);
 })()
 
-export function invoke<Key extends keyof ApiEvent>(
+export function invoke<Key extends keyof ApiEvent, P = unknown>(
     key: Key,
+    payload?: P
 ): Promise<ApiEvent[Key]> {
-    return electron.ipcRenderer.invoke(key);
+    return electron.ipcRenderer.invoke(key, payload);
 }
 
 electron.contextBridge.exposeInMainWorld('electron', {

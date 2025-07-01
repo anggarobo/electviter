@@ -7,19 +7,22 @@ import {
     ThemeIcon,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useEffect, useState, type PropsWithChildren } from "react";
-import type { Directory } from "./type";
+import { useEffect, useState } from "react";
+import type { Directory } from "../../types/directory";
 import {
     FolderIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
     HomeIcon,
 } from "@heroicons/react/24/outline";
-import { LinksGroup } from "./LinksGroup";
+import LinksGroup from "../LinksGroup/index.tsx";
+import { usePathContext } from "app/renderer/contexts/path";
+import Content from "../Contents";
 
-export default function BasicAppShell({ children }: PropsWithChildren) {
+export default function BasicAppShell() {
     const [opened, { toggle }] = useDisclosure();
     const [panes, setPanes] = useState<Directory[]>([]);
+    const { path, setPath } = usePathContext()
 
     useEffect(() => {
         const dir = window.api.dir;
@@ -59,7 +62,9 @@ export default function BasicAppShell({ children }: PropsWithChildren) {
                             <HomeIcon />
                         </ThemeIcon>
                     </ActionIcon>
-                    <TextInput flex={1} size="sm" radius="md" placeholder="/" />
+                    <TextInput flex={1} size="sm" radius="md" placeholder="/" value={path} onChange={(e) => {
+                        setPath(e.currentTarget.value)
+                    }} />
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar p="xs">
@@ -67,12 +72,7 @@ export default function BasicAppShell({ children }: PropsWithChildren) {
                     <LinksGroup key={pane.name} icon={pane.icon} label={pane.name} />
                 ))}
             </AppShell.Navbar>
-            <AppShell.Main>
-                {panes.map((pane) => (
-                    <LinksGroup key={pane.name} icon={pane.icon} label={pane.name} />
-                ))}
-                {children}
-            </AppShell.Main>
+            <Content />
         </AppShell>
     );
 }
