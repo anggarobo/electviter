@@ -2,9 +2,12 @@ import {
     ActionIcon,
     AppShell,
     Burger,
+    Combobox,
+    Flex,
     Group,
     TextInput,
     ThemeIcon,
+    useCombobox,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
@@ -14,15 +17,49 @@ import {
     ChevronLeftIcon,
     ChevronRightIcon,
     HomeIcon,
+    ListBulletIcon,
+    Squares2X2Icon,
+    TableCellsIcon,
+    MagnifyingGlassIcon
 } from "@heroicons/react/24/outline";
 import LinksGroup from "../LinksGroup/index.tsx";
-import { usePathContext } from "app/renderer/contexts/path";
+import { usePathContext, type OsPath } from "app/renderer/contexts/path";
 import Content from "../Contents";
 
 export default function BasicAppShell() {
     const [opened, { toggle }] = useDisclosure();
     const [panes, setPanes] = useState<Directory[]>([]);
-    const { path, setPath } = usePathContext()
+    const { path, setPath, history, setView, view } = usePathContext()
+    const combobox = useCombobox({
+        onDropdownClose: () => combobox.resetSelectedOption(),
+    });
+
+    const views: OsPath["view"][] = ['icon', 'list', 'compact'];
+    const viewIcons: Record<string, React.ElementType> = {
+        list: ListBulletIcon,
+        icon: Squares2X2Icon,
+        compact: TableCellsIcon
+    }
+    const ViewIcon = viewIcons[view as keyof typeof viewIcons];
+    
+    const options = views.map((item) => {
+        const Icon = viewIcons[item as keyof typeof viewIcons];
+        return (
+            <Combobox.Option value={item} key={item}>
+                <Flex gap={4} align="center" >
+                    <ThemeIcon variant="transparent" size={18}>
+                        <Icon />
+                    </ThemeIcon>
+                    {item[0].toUpperCase() + item.slice(1)}
+                </Flex>
+            </Combobox.Option>
+        )
+    });
+
+    const onBack = () => {
+        const f = history.indexOf(path)
+        setPath(history[f - 1])
+    }
 
     useEffect(() => {
         const dir = window.api.dir;
@@ -42,7 +79,7 @@ export default function BasicAppShell() {
             <AppShell.Header>
                 <Group h="100%" px="md">
                     <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-                    <ActionIcon variant="transparent">
+                    <ActionIcon onClick={onBack} variant="transparent">
                         <ThemeIcon variant="transparent" size={24}>
                             <ChevronLeftIcon />
                         </ThemeIcon>
@@ -57,14 +94,42 @@ export default function BasicAppShell() {
                             <ChevronLeftIcon style={{ transform: "rotate(90deg)" }} />
                         </ThemeIcon>
                     </ActionIcon>
-                    <ActionIcon variant="transparent">
+                    <ActionIcon onClick={() => setPath("/home")} variant="transparent">
                         <ThemeIcon variant="transparent" size={24}>
                             <HomeIcon />
                         </ThemeIcon>
                     </ActionIcon>
-                    <TextInput flex={1} size="sm" radius="md" placeholder="/" value={path} onChange={(e) => {
+                    <TextInput flex={1} size="sm" radius="md" value={path} onChange={(e) => {
                         setPath(e.currentTarget.value)
                     }} />
+                    <ActionIcon variant="transparent">
+                        <ThemeIcon variant="transparent" size={24}>
+                            <MagnifyingGlassIcon />
+                        </ThemeIcon>
+                    </ActionIcon>
+                    <Combobox
+                        store={combobox}
+                        width={120}
+                        position="bottom-end"
+                        withArrow={false}
+                        onOptionSubmit={(val) => {
+                            setView(val as OsPath["view"]);
+                            combobox.closeDropdown();
+                        }}
+                    >
+                        <Combobox.Target>
+                            <ActionIcon onClick={() => combobox.toggleDropdown()} variant="transparent">
+                                <ThemeIcon variant="transparent" size={24}>
+                                    <ViewIcon />
+                                </ThemeIcon>
+                            </ActionIcon>
+                        </Combobox.Target>
+
+                        <Combobox.Dropdown>
+                            <Combobox.Options>{options}</Combobox.Options>
+                        </Combobox.Dropdown>
+                    </Combobox>
+                    
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar p="xs">
