@@ -1,4 +1,4 @@
-export interface Directory extends Dir {
+export interface Directory extends Omit<Dir, 'icon'> {
   icon: React.ForwardRefExoticComponent<Omit<React.SVGProps<SVGSVGElement>, "ref"> & {
         title?: string;
         titleId?: string;

@@ -11,7 +11,7 @@ function getPreloadPath() {
 }
 
 function getStaticPath() {
-    return path.join(app.getAppPath(), "/dist-react/index.html")
+    return path.join(app.getAppPath(), "/dist-ui/index.html")
 }
 
 function getAssetPath() {
