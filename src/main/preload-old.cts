@@ -1,5 +1,5 @@
 import electron, { ipcRenderer, IpcRendererEvent } from "electron";
-import ipc from './ipc/renderer';
+import ipc from './ipc/renderer.cjs';
 
 (async () => {
     const platform = await ipc.invoke("platform")

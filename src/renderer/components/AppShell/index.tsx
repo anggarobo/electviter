@@ -63,7 +63,6 @@ export default function BasicAppShell() {
 
     useEffect(() => {
         const pane = window?.api?.pane
-        console.log(window)
         if (pane) {
             const directories = pane.map((item) => ({
                 ...item,

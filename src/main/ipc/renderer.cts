@@ -1,12 +1,8 @@
-import electron, { ipcRenderer, IpcRendererEvent } from "electron";
-
-type Key<Y> = Y extends `${string}` ? Y : ApiEventKey
-type AsyncInvokeResult<T> = Promise<ApiEvent[Key<T> extends ApiEventKey ? Key<T> : ApiEventKey]>
-type SyncInvokeResult<T> = ApiEvent[Key<T> extends ApiEventKey ? Key<T> : ApiEventKey]
-type InvokeResult<T, R> = T extends ApiEventKey ? AsyncInvokeResult<T> | SyncInvokeResult<T> : Promise<R> | R
+import electron, { IpcRendererEvent } from "electron";
+import type { InvokeResult, IpcApiEventKey } from "./types";
 
 function invoke<K extends string | unknown, P = undefined, R = unknown>(
-    key: Key<K>,
+    key: IpcApiEventKey<K>,
     payload?: P extends undefined ? string : P
 ): InvokeResult<K, R> {
     return electron.ipcRenderer.invoke(key, payload) as InvokeResult<K, R>;

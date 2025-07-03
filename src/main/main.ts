@@ -5,7 +5,7 @@ import { ASSETS_PATH, INDEX_PATH, PRELOAD_PATH } from './pathResolver.js';
 import { createMenu } from './menu.js';
 import { createTray } from './tray.js';
 import path from 'path';
-import initIpc from './initIpc.js';
+import initIpc from './ipc/init.js';
 import env from './utils/env.js';
 
 app.on("ready", () => {
@@ -65,9 +65,7 @@ app.on("ready", () => {
         mainWindow.webContents.toggleDevTools();
     });
 
-    console.log({ INDEX_PATH, PRELOAD_PATH })
-
-    // initIpc()
+    initIpc()
 })
 
 app.on("will-quit", () => {

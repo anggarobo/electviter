@@ -5,7 +5,7 @@ import { ASSETS_PATH, INDEX_PATH, PRELOAD_PATH } from './pathResolver.js';
 import { createMenu } from './menu.js';
 import { createTray } from './tray.js';
 import path from 'path';
-import initIpc from './initIpc.js';
+import initIpc from './ipc/init.js';
 
 app.on("ready", () => {
     const mainWindow = new BrowserWindow({
