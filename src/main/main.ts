@@ -9,6 +9,7 @@ import path from 'path';
 import { openFile, readSidePane } from './dir.js';
 import osx from './utils/os.js';
 import { apiIpcMainHandle } from './utils/ipc.js';
+import { readFolderRecursive } from './utils/fileManager.js';
 
 app.on("ready", () => {
     const mainWindow = new BrowserWindow({
@@ -108,7 +109,9 @@ app.on("ready", () => {
     ipcMain.removeHandler("openFile");
     ipcMain.handle("openFile", async (_, payload) => {
         const response = await openFile(payload)
-        return response
+        const res = await readFolderRecursive(payload)
+        console.log(res)
+        return res
     })
 })
 

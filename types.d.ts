@@ -50,8 +50,13 @@ type Dir = {
     isFIFO: boolean;
     isSocket: boolean;
     name: Name | string;
-    parentPath: string;
-    path: string;
+    parentPath?: string;
+    path?: string;
+    size?: number;
+    ext?: string;
+    isHidden?: boolean;
+    image?: ISizeCalculationResult
+    icon?: SVGElement | string;
 }
 
 type ApiEvent = {

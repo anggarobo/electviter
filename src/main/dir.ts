@@ -17,6 +17,7 @@ export async function openFile(path: string) {
     let dirs: Dir[] = []
     try {
         const res = await fs.readdir(path, { withFileTypes: true })
+        
         dirs = res.map(item => ({
             ...item,
             isDirectory: item.isDirectory(),
