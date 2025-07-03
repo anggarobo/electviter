@@ -1,10 +1,9 @@
-import electron, { IpcRendererEvent } from "electron";
+import electron, { ipcRenderer, IpcRendererEvent } from "electron";
 import ipc from './ipc/renderer';
 
-const load = async () => {
+(async () => {
     const platform = await ipc.invoke("platform")
     const pane = await ipc.invoke("pane")
-    console.log({platform, pane})
     electron.contextBridge.exposeInMainWorld("api", {
         platform,
         pane,
@@ -15,9 +14,14 @@ const load = async () => {
             readdir: async (path) => ipc.invoke<"file:read", string, Dir[]>("file:read", path)
         },
     } satisfies Window['api']);
-}
+})()
 
-load()
+export function invoke<Key extends keyof ApiEvent, P = unknown>(
+    key: Key,
+    payload?: P
+): Promise<ApiEvent[Key]> {
+    return electron.ipcRenderer.invoke(key, payload);
+}
 
 electron.contextBridge.exposeInMainWorld('electron', {
     subscribeStatistics: (callback) => {

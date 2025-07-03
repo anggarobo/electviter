@@ -1,12 +1,11 @@
-import { app, BrowserWindow, dialog, globalShortcut } from 'electron';
-import { ipcMainHandle, ipcMainOn } from './util.js';
+import { app, BrowserWindow, dialog, globalShortcut, ipcMain, nativeImage } from 'electron';
+import { ipcMainHandle, ipcMainOn, isDev } from './util.js';
 import { getStaticData, pollResources } from './resourceManager.js';
 import { ASSETS_PATH, INDEX_PATH, PRELOAD_PATH } from './pathResolver.js';
 import { createMenu } from './menu.js';
 import { createTray } from './tray.js';
 import path from 'path';
 import initIpc from './initIpc.js';
-import env from './utils/env.js';
 
 app.on("ready", () => {
     const mainWindow = new BrowserWindow({
@@ -17,7 +16,7 @@ app.on("ready", () => {
         // frame: false,
     })
     
-    if (env.isDev) {
+    if (isDev()) {
         mainWindow.loadURL("http://localhost:5777");
     } else {
         mainWindow.loadFile(INDEX_PATH)
@@ -67,7 +66,41 @@ app.on("ready", () => {
 
     console.log({ INDEX_PATH, PRELOAD_PATH })
 
-    // initIpc()
+    initIpc()
+
+    // handle select file request
+    // ipcMain.handle("dialog:openFile", async () => {
+    //     const result = await dialog.showOpenDialog(mainWindow, {
+    //         properties: ["openFile"],
+    //         filters: [
+    //             { name: "Text files", extensions: ["txt", "md"] },
+    //             { name: "All files", extensions: ["*"] }
+    //         ]
+    //     })
+
+    //     return result.filePaths
+    // })
+
+    // // handle read file request
+    // ipcMain.handle('file:read', async (ev, filePath) => {
+    //     try {
+    //         return fs.readFileSync(filePath, 'utf-8')
+    //     } catch (error) {
+    //         dialog.showErrorBox('Error', 'failed to read teh file')
+    //         return ''
+    //     }
+    // })
+
+    // // handle write file request
+    // ipcMain.handle('file:write', async (_, { filePath, content }) => {
+    //     try {
+    //         fs.writeFileSync(filePath, content, 'utf-8')
+    //         return 'File writtern succesfully'
+    //     } catch (error) {
+    //         dialog.showErrorBox('Error', 'failed to read teh file')
+    //         return 'Failed to write the file'
+    //     }
+    // })
 })
 
 app.on("will-quit", () => {

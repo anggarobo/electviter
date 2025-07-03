@@ -2,7 +2,8 @@ import fs from 'fs';
 import osUtils from 'os-utils';
 import os from 'os';
 import type { BrowserWindow } from 'electron';
-import { ipcWebContentsSend, isDev } from './util.js';
+import env from './utils/env.js';
+import { electron } from './ipc/main.js';
 
 
 const POLLING_INTERVAL = 1000; // Default polling interval in milliseconds
@@ -15,7 +16,7 @@ const POLLING_INTERVAL = 1000; // Default polling interval in milliseconds
 export function pollResources(mainWindow: BrowserWindow) {
     setInterval(async () => {
         const sysInfo = await getSystemInfo()
-        ipcWebContentsSend('statistics', mainWindow.webContents, sysInfo);
+        electron.send('statistics', mainWindow.webContents, sysInfo);
     }, POLLING_INTERVAL);
 }
 
@@ -46,7 +47,7 @@ export function getStaticData(): Omit<Statistics, 'cpuUsage'> {
         storage,
         memory,
         uptime: os.uptime(),
-        mode: isDev() ? 'development' : 'production',
+        mode: env.mode as Statistics["mode"],
     }
 }
 

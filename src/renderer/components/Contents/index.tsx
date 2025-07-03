@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { AppShell, Box, Grid, ThemeIcon, Text, Flex } from "@mantine/core";
-// import LinksGroup from "../LinksGroup/index.tsx";
-import type { Directory } from "renderer/types/directory";
 import { usePathContext } from "app/renderer/contexts/path";
-import { FolderIcon, GifIcon, PhotoIcon as ImageIcon, DocumentTextIcon } from "@heroicons/react/24/solid";
-import { DocumentCheckIcon, DocumentIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import { FolderIcon, GifIcon, PhotoIcon as ImageIcon } from "@heroicons/react/24/solid";
+import { DocumentCheckIcon, DocumentIcon, PhotoIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
 import './index.css';
 import LinksGroup from "../LinksGroup";
 
@@ -21,10 +19,11 @@ const __icon__: { [key: string]: React.ComponentType<any> } = {
 }
 
 export default function Content() {
-    const [contents, setContents] = useState<Directory[]>([])
+    const [isLoading, setIsLoading] = useState(false)
+    const [contents, setContents] = useState<Dir[]>([])
     const { path, setPath, setHistory, view } = usePathContext()
 
-    const openFolder = async (content: Directory) => {
+    const openFolder = async (content: Dir) => {
         const pathName = path[-1] === '/' ? path + content.name : path + '/' + content.name
         setPath(pathName)
         setHistory(prev => ([...prev, pathName]))
@@ -32,13 +31,22 @@ export default function Content() {
 
     useEffect(() => {
         const channel = async () => {
-            setContents([])
-            const response = await window.api.ipc.openFolder(path)
-            setContents(response)
+            setIsLoading(true)
+            try {
+                setContents([])
+                const response = await window.api.ipc.readdir(path)
+                setContents(response || [])
+            } catch (error) {
+                console.error(error)
+            } finally {
+                setIsLoading(false)
+            }
         }
 
         channel()
     }, [path])
+
+    console.log(isLoading)
 
     return (
         <AppShell.Main>

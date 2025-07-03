@@ -1,11 +1,11 @@
 {
     "appId": "com.anggarobo.electviter",
     "files": [
-        "dist-electron",
-        "dist-react"
+        "dist-main",
+        "dist-renderer"
     ],
     "extraResources": [
-        "dist-electron/preload.cjs", 
+        "dist-main/preload.cjs", 
         "src/assets/**"
     ],
     "icon": "./assets/unnamed.png",

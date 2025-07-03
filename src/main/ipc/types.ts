@@ -1,0 +1,1 @@
+export type ApiEventKey = keyof ApiEvent

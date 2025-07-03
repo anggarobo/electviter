@@ -11,24 +11,24 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import type { Directory } from "../../types/directory";
 import {
-    FolderIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
     HomeIcon,
     ListBulletIcon,
     Squares2X2Icon,
     TableCellsIcon,
-    MagnifyingGlassIcon
+    MagnifyingGlassIcon,
+    FolderIcon
 } from "@heroicons/react/24/outline";
 import LinksGroup from "../LinksGroup/index.tsx";
 import { usePathContext, type OsPath } from "app/renderer/contexts/path";
 import Content from "../Contents";
+import type { Icon } from "app/renderer/types/index.ts";
 
 export default function BasicAppShell() {
     const [opened, { toggle }] = useDisclosure();
-    const [panes, setPanes] = useState<Directory[]>([]);
+    const [panes, setPanes] = useState<Dir<string, Icon>[]>([]);
     const { path, setPath, history, setView, view } = usePathContext()
     const combobox = useCombobox({
         onDropdownClose: () => combobox.resetSelectedOption(),
@@ -62,12 +62,15 @@ export default function BasicAppShell() {
     }
 
     useEffect(() => {
-        const dir = window.api.dir;
-        const directories = dir.map((d) => ({
-            ...d,
-            icon: FolderIcon,
-        }));
-        setPanes(directories);
+        const pane = window?.api?.pane
+        console.log(window)
+        if (pane) {
+            const directories = pane.map((item) => ({
+                ...item,
+                icon: FolderIcon,
+            }));
+            setPanes(directories);
+        }
     }, []);
 
     return (

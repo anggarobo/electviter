@@ -1,5 +1,6 @@
 import { app, BrowserWindow, Menu } from "electron";
-import { ipcWebContentsSend, isDev } from "./util.js";
+import env from "./utils/env.js";
+import { electron } from "./ipc/main.js";
 
 export function createMenu(mainWindow: BrowserWindow) {
     Menu.setApplicationMenu(
@@ -26,7 +27,7 @@ export function createMenu(mainWindow: BrowserWindow) {
                         accelerator: "CmdOrCtrl+I",
                         label: "DevTools",
                         click: () => mainWindow.webContents.toggleDevTools(),
-                        visible: isDev(),
+                        visible: env.isDev,
                     },
                     {
                         label: "Quit",
@@ -61,15 +62,15 @@ export function createMenu(mainWindow: BrowserWindow) {
                 submenu: [
                     {
                         label: "CPU",
-                        click: () => ipcWebContentsSend("changeView", mainWindow.webContents, "CPU"),
+                        click: () => electron.send("changeView", mainWindow.webContents, "CPU"),
                     },
                     {
                         label: "RAM",
-                        click: () => ipcWebContentsSend("changeView", mainWindow.webContents, "RAM"),
+                        click: () => electron.send("changeView", mainWindow.webContents, "RAM"),
                     },
                     {
                         label: "STORAGE",
-                        click: () => ipcWebContentsSend("changeView", mainWindow.webContents, "STORAGE"),
+                        click: () => electron.send("changeView", mainWindow.webContents, "STORAGE"),
                     }
                 ]
             },
@@ -79,15 +80,15 @@ export function createMenu(mainWindow: BrowserWindow) {
                 submenu: [
                     {
                         label: "CPU",
-                        click: () => ipcWebContentsSend("changeView", mainWindow.webContents, "CPU"),
+                        click: () => electron.send("changeView", mainWindow.webContents, "CPU"),
                     },
                     {
                         label: "RAM",
-                        click: () => ipcWebContentsSend("changeView", mainWindow.webContents, "RAM"),
+                        click: () => electron.send("changeView", mainWindow.webContents, "RAM"),
                     },
                     {
                         label: "STORAGE",
-                        click: () => ipcWebContentsSend("changeView", mainWindow.webContents, "STORAGE"),
+                        click: () => electron.send("changeView", mainWindow.webContents, "STORAGE"),
                     }
                 ]
             },
@@ -97,15 +98,15 @@ export function createMenu(mainWindow: BrowserWindow) {
                 submenu: [
                     {
                         label: "CPU",
-                        click: () => ipcWebContentsSend("changeView", mainWindow.webContents, "CPU"),
+                        click: () => electron.send("changeView", mainWindow.webContents, "CPU"),
                     },
                     {
                         label: "RAM",
-                        click: () => ipcWebContentsSend("changeView", mainWindow.webContents, "RAM"),
+                        click: () => electron.send("changeView", mainWindow.webContents, "RAM"),
                     },
                     {
                         label: "STORAGE",
-                        click: () => ipcWebContentsSend("changeView", mainWindow.webContents, "STORAGE"),
+                        click: () => electron.send("changeView", mainWindow.webContents, "STORAGE"),
                     }
                 ]
             }
