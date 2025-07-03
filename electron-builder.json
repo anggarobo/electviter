@@ -2,7 +2,7 @@
     "appId": "com.anggarobo.electviter",
     "files": [
         "dist-main",
-        "dist-renderer"
+        "dist-ui"
     ],
     "extraResources": [
         "dist-main/preload.cjs", 
