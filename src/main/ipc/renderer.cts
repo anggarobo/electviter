@@ -1,22 +1,5 @@
 import electron, { IpcRendererEvent } from "electron";
-import type { InvokeResult, IpcApiEventKey } from "./ipc/types";
-
-(async () => {
-    const ipc = { invoke, on, send }
-    const platform = await ipc.invoke("platform")
-    const pane = await ipc.invoke("pane")
-    console.log({platform, pane})
-    electron.contextBridge.exposeInMainWorld("api", {
-        platform,
-        pane,
-        ipc: {
-            console: function (): void {
-                throw new Error("Function not implemented.");
-            },
-            readdir: async (path) => ipc.invoke<"file:read", string, Dir[]>("file:read", path)
-        },
-    } satisfies Window['api']);
-})()
+import type { InvokeResult, IpcApiEventKey } from "./types";
 
 function invoke<K extends string | unknown, P = undefined, R = unknown>(
     key: IpcApiEventKey<K>,
@@ -40,3 +23,5 @@ function send<Key extends keyof EventPayloadMapping>(
 ) {
     electron.ipcRenderer.send(key, payload);
 }
+
+export default { invoke, on, send }

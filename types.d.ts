@@ -35,13 +35,13 @@ type EventPayloadMapping = {
 type UnsubscribeFunction = () => void;
 
 type OsPlatform = {
-    platform: NodeJS.Platform;
+    platform: Extract<NodeJS.Platform, "win32" | "linux" | "darwin">;
     isMac: boolean
     isLinux: boolean
     isWindows: boolean
 }
 
-type Dir = {
+type Dir <N = unknown, I = unknown> = {
     isFile: boolean;
     isDirectory: boolean;
     isBlockDevice: boolean;
@@ -49,22 +49,24 @@ type Dir = {
     isSymbolicLink: boolean;
     isFIFO: boolean;
     isSocket: boolean;
-    name: Name | string;
+    name: N | Name | string;
     parentPath?: string;
     path?: string;
     size?: number;
     ext?: string;
     isHidden?: boolean;
     image?: ISizeCalculationResult
-    icon?: SVGElement | string;
+    icon?: I;
 }
 
-type ApiEvent = {
+type ApiEvent<K extends string = unknown, V = unknown> = {
     platform: OsPlatform,
-    dir: Dirent<string>[]
-    openFile: Dirent<string>[]
+    pane: Dir[]
+    openFile: Dir[]
+    [key in K]: V
 }
 
+type ApiEventKey<K = unknown, V = unknown> = keyof ApiEvent<K, V>
 interface Window {
     electron: {
         subscribeStatistics: (callback: (statistics: Statistics) => void) => UnsubscribeFunction;
@@ -75,9 +77,9 @@ interface Window {
     api: {
         ipc: {
             console: () => void
-            openFolder: (path: string) => Promise<Dirent<string>[]>
+            readdir: (path: string) => Promise<Dir[] | undefined>
         },
         platform: OsPlatform,
-        dir: Dirent<string>[]
+        pane: Dir[]
     },
 }

@@ -3,15 +3,16 @@ import { useState } from 'react';
 import { ChevronRightIcon } from '@heroicons/react/16/solid';
 import { Box, Collapse, Group, Text, ThemeIcon, UnstyledButton } from '@mantine/core';
 import classes from './LinksGroup.module.css';
+import type { Icon } from 'app/renderer/types';
 
-interface LinksGroupProps {
-    icon: React.FC<any>;
+interface LinksGroupProps<I = unknown> {
+    icon?: I | Icon;
     label: string;
     initiallyOpened?: boolean;
     links?: { label: string; link: string }[];
 }
 
-export default function LinksGroup({ icon: Icon, label, initiallyOpened, links }: LinksGroupProps) {
+export default function LinksGroup({ icon: LinkIcon, label, initiallyOpened, links }: LinksGroupProps<Icon>) {
     const hasLinks = Array.isArray(links);
     const [opened, setOpened] = useState(initiallyOpened || false);
     
@@ -31,12 +32,14 @@ export default function LinksGroup({ icon: Icon, label, initiallyOpened, links }
         <>
             <UnstyledButton onClick={() => setOpened((o) => !o)} className={classes.control}>
                 <Group justify="space-between" gap={0}>
-                    <Box style={{ display: 'flex', alignItems: 'center' }}>
-                        <ThemeIcon variant="transparent" size={24}>
-                            <Icon size={18} />
-                        </ThemeIcon>
-                        <Box ml="md">{label}</Box>
-                    </Box>
+                    { LinkIcon && (
+                        <Box style={{ display: 'flex', alignItems: 'center' }}>
+                            <ThemeIcon variant="transparent" size={24}>
+                                <LinkIcon />
+                            </ThemeIcon>
+                            <Box ml="md">{label}</Box>
+                        </Box>
+                    ) }
                     {hasLinks && (
                         <ThemeIcon variant="transparent" size={24}>
                             <ChevronRightIcon style={{ transform: opened ? 'rotate(-90deg)' : 'none' }} />
