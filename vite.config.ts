@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   base: "./",
   build: {
-    outDir: "dist-react"
+    outDir: "dist-ui"
   },
   server: {
     port: 5777,

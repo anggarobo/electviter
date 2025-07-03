@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "dist-electron/main.js",
+  "main": "dist-main/main.js",
   "author": "anggarobo",
   "license": "MIT",
   "description": "A Electron app with React and Vite",

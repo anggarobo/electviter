@@ -6,12 +6,12 @@ function getPreloadPath() {
     return path.join(
         app.getAppPath(),
         isDev() ? '.' : '..',
-        '/dist-electron/preload.cjs'
+        '/dist-main/preload.cjs'
     );
 }
 
 function getStaticPath() {
-    return path.join(app.getAppPath(), "/dist-react/index.html")
+    return path.join(app.getAppPath(), "/dist-ui/index.html")
 }
 
 function getAssetPath() {
