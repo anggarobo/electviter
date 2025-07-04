@@ -5,7 +5,7 @@ import useStaticData from "./hooks/useStaticData";
 import { Chart } from "./components/Charts";
 // import Header from "./components/Header";
 import ChartItem from "./components/Charts/Item";
-// import useFile from "./hooks/useFile";
+import useFile from "./hooks/useFile";
 
 function App() {
   const staticData = useStaticData();
