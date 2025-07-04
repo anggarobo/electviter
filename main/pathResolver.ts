@@ -18,7 +18,7 @@ function getAssetPath() {
     return path.join(
         app.getAppPath(),
         isDev() ? '.' : '..',
-        '/src/assets'
+        '/assets'
     ) 
 }
 

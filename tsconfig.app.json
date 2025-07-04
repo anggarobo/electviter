@@ -32,12 +32,10 @@
 
     "baseUrl": ".",
     "paths": {
-      "app/*": ["src/*"],
-      "main/*": ["src/main/*"],
-      "renderer/*": ["src/renderer/*"],
+      "renderer/*": ["renderer/*"],
       "__assets/*": ["assets/*"],
     }
   },
-  "include": ["src"],
-  "exclude": ["src/main"]
+  "include": ["./renderer", "./assets"],
+  "exclude": ["./main"]
 }

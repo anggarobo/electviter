@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AppShell, Box, Grid, ThemeIcon, Text, Flex } from "@mantine/core";
-import { usePathContext } from "app/renderer/contexts/path";
+import { usePathContext } from "../../contexts/path";
 import { FolderIcon, GifIcon, PhotoIcon as ImageIcon } from "@heroicons/react/24/solid";
 import { DocumentCheckIcon, DocumentIcon, PhotoIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
 import './index.css';

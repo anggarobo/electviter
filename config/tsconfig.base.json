@@ -8,5 +8,5 @@
       "skipLibCheck": true, // skip errors from dependencies,
       "types": ["../types"]
     },
-    "include": ["../src/main"]
+    "include": ["../main"]
 }

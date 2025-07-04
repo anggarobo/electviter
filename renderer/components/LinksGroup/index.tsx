@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ChevronRightIcon } from '@heroicons/react/16/solid';
 import { Box, Collapse, Group, Text, ThemeIcon, UnstyledButton } from '@mantine/core';
 import classes from './LinksGroup.module.css';
-import type { Icon } from 'app/renderer/types';
+import type { Icon } from 'renderer/types';
 
 interface LinksGroupProps<I = unknown> {
     icon?: I | Icon;
