@@ -5,7 +5,7 @@ import {
   Area,
   XAxis,
   YAxis,
-} from 'recharts';
+} from "recharts";
 
 type BaseChartProps = {
   data: { value: number | undefined }[];
@@ -15,7 +15,7 @@ type BaseChartProps = {
 
 export function BaseChart(props: BaseChartProps) {
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
+    <ResponsiveContainer width={"100%"} height={"100%"}>
       <AreaChart data={props.data}>
         <CartesianGrid stroke="#333" strokeDasharray="5 5" fill="#1C1C1C" />
         <Area

@@ -5,13 +5,15 @@ import { INDEX_PATH } from "../pathResolver.js";
 
 function handle<K extends string | unknown, P = undefined>(
   key: K extends `${string}` ? K : ApiEventKey,
-  handler: (payload?: P extends undefined ? string : P) => Promise<ApiEvent[ApiEventKey]> | ApiEvent[ApiEventKey]
+  handler: (
+    payload?: P extends undefined ? string : P,
+  ) => Promise<ApiEvent[ApiEventKey]> | ApiEvent[ApiEventKey],
 ) {
   ipcMain.handle(key, (event, payload) => {
     if (event.senderFrame) {
       validateEventFrame(event.senderFrame);
     }
-    
+
     return handler(payload);
   });
 }
@@ -29,14 +31,14 @@ export function validateEventFrame(frame: WebFrameMain) {
 function send<Key extends keyof EventPayloadMapping>(
   key: Key,
   webContents: WebContents,
-  payload: EventPayloadMapping[Key]
+  payload: EventPayloadMapping[Key],
 ) {
   webContents.send(key, payload);
 }
 
 function on<Key extends keyof EventPayloadMapping>(
   key: Key,
-  handler: (payload: EventPayloadMapping[Key]) => void
+  handler: (payload: EventPayloadMapping[Key]) => void,
 ) {
   ipcMain.on(key, (event, payload) => {
     if (event.senderFrame) {
@@ -46,5 +48,5 @@ function on<Key extends keyof EventPayloadMapping>(
   });
 }
 
-export const electron = { on, send }
+export const electron = { on, send };
 export default { handle };

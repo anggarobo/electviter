@@ -1,22 +1,16 @@
 {
-    "appId": "com.anggarobo.electviter",
-    "files": [
-        "dist-main",
-        "dist-ui"
-    ],
-    "extraResources": [
-        "dist-main/preload.cjs", 
-        "assets/**"
-    ],
-    "icon": "./assets/unnamed.png",
-    "mac": {
-        "target": "dmg"
-    },
-    "linux": {
-        "target": "AppImage",
-        "category": "Utility"
-    },
-    "win": {
-        "target": ["portable", "msi"]
-    }
+  "appId": "com.anggarobo.electviter",
+  "files": ["dist-main", "dist-ui"],
+  "extraResources": ["dist-main/preload.cjs", "assets/**"],
+  "icon": "./assets/unnamed.png",
+  "mac": {
+    "target": "dmg"
+  },
+  "linux": {
+    "target": "AppImage",
+    "category": "Utility"
+  },
+  "win": {
+    "target": ["portable", "msi"]
+  }
 }

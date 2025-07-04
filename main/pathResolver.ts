@@ -1,27 +1,23 @@
-import path from 'path';
-import { app } from 'electron';
-import { isDev } from './util.js';
+import path from "path";
+import { app } from "electron";
+import { isDev } from "./util.js";
 
 function getPreloadPath() {
-    return path.join(
-        app.getAppPath(),
-        isDev() ? '.' : '..',
-        '/dist-main/preload.cjs'
-    );
+  return path.join(
+    app.getAppPath(),
+    isDev() ? "." : "..",
+    "/dist-main/preload.cjs",
+  );
 }
 
 function getStaticPath() {
-    return path.join(app.getAppPath(), "/dist-ui/index.html")
+  return path.join(app.getAppPath(), "/dist-ui/index.html");
 }
 
 function getAssetPath() {
-    return path.join(
-        app.getAppPath(),
-        isDev() ? '.' : '..',
-        '/assets'
-    ) 
+  return path.join(app.getAppPath(), isDev() ? "." : "..", "/assets");
 }
 
-export const INDEX_PATH = getStaticPath()
+export const INDEX_PATH = getStaticPath();
 export const PRELOAD_PATH = getPreloadPath();
-export const ASSETS_PATH = getAssetPath()
+export const ASSETS_PATH = getAssetPath();

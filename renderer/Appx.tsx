@@ -15,17 +15,17 @@ function App() {
 
   const cpuUsages = useMemo(
     () => statistics.map((stat) => stat.cpuUsage),
-    [statistics]
+    [statistics],
   );
 
   const ramUsages = useMemo(
     () => statistics.map((stat) => stat.memory.usage),
-    [statistics]
+    [statistics],
   );
 
   const storageUsages = useMemo(
     () => statistics.map((stat) => stat.storage.usage),
-    [statistics]
+    [statistics],
   );
 
   const activeUsages = useMemo(() => {
@@ -43,7 +43,7 @@ function App() {
     return window.electron.subscribeChangeView((view) => setActiveView(view));
   }, []);
 
-  console.log(statistics)
+  console.log(statistics);
 
   return (
     <div className="App">
@@ -61,7 +61,9 @@ function App() {
             onClick={() => setActiveView("RAM")}
             title="RAM"
             view="RAM"
-            subTitle={(Math.floor((staticData?.memory?.total || 0) / 1024)) + " GB"}
+            subTitle={
+              Math.floor((staticData?.memory?.total || 0) / 1024) + " GB"
+            }
             data={ramUsages}
           />
           <ChartItem
@@ -69,7 +71,10 @@ function App() {
             title="STORAGE"
             view="STORAGE"
             // subTitle={(staticData?.storage.total.toString() ?? "") + " GB"}
-            subTitle={(Math.floor((staticData?.storage?.total || 0) / 1_000_000_000)) + " GB"}
+            subTitle={
+              Math.floor((staticData?.storage?.total || 0) / 1_000_000_000) +
+              " GB"
+            }
             data={storageUsages}
           />
         </div>
@@ -82,8 +87,9 @@ function App() {
         </div>
       </div>
 
-
-      <br /><br /><br />
+      <br />
+      <br />
+      <br />
       {/* <button onClick={onOpenFile} id="openFileBtn">Open File</button>
       <button onClick={onSaveFile} id="saveFileBtn">Save File</button>
       <pre id="fileContent"></pre> */}

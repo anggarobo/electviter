@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export default function useStatistics(dataPointCount: number): Statistics[] {
   const [value, setValue] = useState<Statistics[]>([]);
@@ -13,7 +13,7 @@ export default function useStatistics(dataPointCount: number): Statistics[] {
         }
 
         return newData;
-      })
+      }),
     );
     return unsub;
   }, []);

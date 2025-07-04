@@ -33,7 +33,7 @@
     "baseUrl": ".",
     "paths": {
       "renderer/*": ["renderer/*"],
-      "__assets/*": ["assets/*"],
+      "__assets/*": ["assets/*"]
     }
   },
   "include": ["./renderer", "./assets"],

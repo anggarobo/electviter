@@ -1,12 +1,11 @@
-
 {
-    "compilerOptions": {
-      "strict": true, // require strict type-checking options (null save)
-      "target": "esnext", // tell typescript to generate ECMAScript version
-      "module": "nodenext", // tell typescript to require ECMAScript as input (include .js file imports)
-      "outDir": "../dist-main", // define where to put the generated js
-      "skipLibCheck": true, // skip errors from dependencies,
-      "types": ["../types"]
-    },
-    "include": ["../main"]
+  "compilerOptions": {
+    "strict": true, // require strict type-checking options (null save)
+    "target": "esnext", // tell typescript to generate ECMAScript version
+    "module": "nodenext", // tell typescript to require ECMAScript as input (include .js file imports)
+    "outDir": "../dist-main", // define where to put the generated js
+    "skipLibCheck": true, // skip errors from dependencies,
+    "types": ["../types"]
+  },
+  "include": ["../main"]
 }

@@ -12,5 +12,3 @@ In the context of an Electron app, the **renderer process** is responsible for r
 - ⚡ Bundled for use in an Electron renderer process
 - 📦 Communicates with the Electron main process via IPC
 - 🎨 Handles the UI and user interactions of the desktop application
-
-

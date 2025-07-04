@@ -5,7 +5,7 @@ import { INDEX_PATH } from "../pathResolver.js";
 
 export function apiIpcMainHandle<Key extends keyof ApiEvent, P = unknown>(
   key: Key,
-  handler: (payload?: P) => ApiEvent[Key]
+  handler: (payload?: P) => ApiEvent[Key],
 ) {
   ipcMain.handle(key, (event, payload) => {
     if (event.senderFrame) {
