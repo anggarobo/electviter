@@ -16,7 +16,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "app": path.resolve(__dirname, 'src'),
-      "main": path.resolve(__dirname, 'src/main'),
+      "main": path.resolve(__dirname, 'main'),
       "renderer": path.resolve(__dirname, 'src/renderer'),
       "__assets": path.resolve(__dirname, 'assets'),
     }

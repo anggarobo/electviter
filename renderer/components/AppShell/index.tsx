@@ -22,9 +22,9 @@ import {
     FolderIcon
 } from "@heroicons/react/24/outline";
 import LinksGroup from "../LinksGroup/index.tsx";
-import { usePathContext, type OsPath } from "app/renderer/contexts/path";
+import { usePathContext, type OsPath } from "../../contexts/path.tsx";
 import Content from "../Contents";
-import type { Icon } from "app/renderer/types/index.ts";
+import type { Icon } from "../../types/index.ts";
 
 export default function BasicAppShell() {
     const [opened, { toggle }] = useDisclosure();

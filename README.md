@@ -19,27 +19,43 @@ This project is a personal exploration of building a desktop application using a
 
 ```bash
 electviter/
-├── src/
-│   ├── electron/
+├── assets/ # Static assets (images, fonts, etc.)
+├── config/ # TS Configuration
+│   └── tsconfig.base.json
+│
+├── main/   # Electron main process
+│   ├── ipc/
+│   │   ├── init.ts         
 │   │   ├── main.ts         
-│   │   ├── pathResolver.ts         
-│   │   ├── preload.cts         
-│   │   ├── resourceManager.ts         
-│   │   ├── tsconfig.json         
-│   │   └── util.ts   
-│   │              
-│   └── ui/                 
-│       ├── assets/
-│       ├── components/ 
-│       ├── App.css         
-│       ├── App.tsx         
-│       ├── index.css       
-│       ├── main.tsx        
-│       └── vite-env.d.ts   
+│   │   ├── renderer.cts        
+│   │   └── types.ts   
+│   ├── utils/
+│   │   ├── env.ts         
+│   │   ├── fm.ts      
+│   │   └── os.ts  
+│   ├── main.ts 
+│   ├── pathResolver.ts 
+│   ├── preload.ts 
+│   ├── README.md 
+│   ├── resourceManager.ts 
+│   ├── tray.ts 
+│   └── tsconfig.json
+│
+├── renderer/ # Electron renderer process
+│   ├── components/
+│   ├── contexts/ 
+│   ├── hooks/ 
+│   ├── types/ 
+│   ├── App.css 
+│   ├── App.tsx 
+│   ├── index.tsx 
+│   ├── styles.css 
+│   └── README.md
 │   
-├── electron-builder.json   
+├── electron-builder.json     
 ├── index.html              
 ├── package.json
+├── post.css.ts
 ├── README.md               
 ├── tsconfig.app.json       
 ├── tsconfig.json
@@ -110,7 +126,7 @@ This project helped me gain a deeper understanding of how modern front-end tools
 
 
 ## Screenshot
-![image info](./assets/showcases/Screenshot_2025-07-03_07-01-08.png)
+![image info](./showcases/Screenshot_2025-07-03_07-01-08.png)
 
 
 

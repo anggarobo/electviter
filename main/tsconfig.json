@@ -1,12 +1,12 @@
 // tell to typescript what it should do with exactly those file inside the electron directory
 {
   "extends": [
-    "../../config/tsconfig.base.json"
+    "../config/tsconfig.base.json"
   ],
   "compilerOptions": {
-    "outDir": "../../dist-main", // define where to put the generated js
+    "outDir": "../dist-main", // define where to put the generated js
     "types": [
-      "../../types"
+      "../types"
     ],
     "baseUrl": ".",
     "paths": {
@@ -14,7 +14,7 @@
         "src/*"
       ],
       "main/*": [
-        "src/main/*"
+        "main/*"
       ],
       "__assets/*": [
         "assets/*"
