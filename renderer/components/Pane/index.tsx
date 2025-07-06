@@ -7,10 +7,16 @@ import { useAppContext } from "../../contexts/app";
 
 export default function () {
   const [items, setItems] = useState<Dir<string, Icon>[]>([]);
-  const { setPath, setSearch } = useAppContext();
+  const { setPath, setSearch, setHistory } = useAppContext();
 
   const onNavigate = (path: string) => {
     setPath(path);
+    setHistory((prev) => {
+      return [
+        ...prev.map((items) => ({ ...items, isActive: false })),
+        { path, isActive: true },
+      ];
+    });
     setSearch({ input: "", isActive: false });
   };
 

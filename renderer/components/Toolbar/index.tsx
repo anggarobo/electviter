@@ -21,7 +21,7 @@ import {
 } from "@mantine/core";
 import type { UseDisclosureReturnValue } from "@mantine/hooks";
 import { useAppContext, type OsPath } from "../../contexts/app";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function ({
   disclosure,
@@ -78,26 +78,71 @@ export default function ({
     setDirPath("");
   };
 
-  const onBack = () => {
-    const f = history.indexOf(path);
-    setPath(history[f - 1]);
+  const disabledUndo = useMemo(() => {
+    const currentPath = history.findIndex((item) => item.isActive);
+    return currentPath === 0;
+  }, [path, history]);
+
+  const disabledRedo = useMemo(() => {
+    const currentPath = history.findIndex((item) => item.isActive);
+    return currentPath === history.length - 1;
+  }, [path, history]);
+
+  const onUndo = () => {
+    const index = history.findIndex((hist) => hist.isActive);
+    const next = history[index - 1];
+    setPath(next.path);
+    ctx.setHistory((prev) =>
+      prev.map((item) => {
+        if (item.isActive) return { ...item, isActive: false };
+        if (item.path === next.path) return { ...item, isActive: true };
+        return item;
+      }),
+    );
+    ctx.setSearch({ input: "", isActive: false });
+  };
+
+  const onRedo = () => {
+    const index = history.findIndex((hist) => hist.isActive);
+    const next = history[index + 1];
+    setPath(next.path);
+    ctx.setHistory((prev) =>
+      prev.map((item) => {
+        if (item.isActive) return { ...item, isActive: false };
+        if (item.path === next.path) return { ...item, isActive: true };
+        return item;
+      }),
+    );
+    ctx.setSearch({ input: "", isActive: false });
   };
 
   return (
     <AppShell.Header>
       <Group h="100%" px="md">
         <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-        <ActionIcon onClick={onBack} variant="transparent">
+        <ActionIcon
+          disabled={disabledUndo}
+          onClick={onUndo}
+          variant="transparent"
+        >
           <ThemeIcon variant="transparent" size={24}>
             <ChevronLeftIcon />
           </ThemeIcon>
         </ActionIcon>
-        <ActionIcon variant="transparent">
+        <ActionIcon
+          disabled={disabledRedo}
+          onClick={onRedo}
+          variant="transparent"
+        >
           <ThemeIcon variant="transparent" size={24}>
             <ChevronRightIcon />
           </ThemeIcon>
         </ActionIcon>
-        <ActionIcon variant="transparent">
+        <ActionIcon
+          disabled={disabledUndo}
+          onClick={onUndo}
+          variant="transparent"
+        >
           <ThemeIcon variant="transparent" size={24}>
             <ChevronLeftIcon style={{ transform: "rotate(90deg)" }} />
           </ThemeIcon>

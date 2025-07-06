@@ -5,9 +5,14 @@ import {
   type PropsWithChildren,
 } from "react";
 
+interface HistoryPath {
+  path: string;
+  isActive: boolean;
+}
+
 export interface OsPath {
   username: string;
-  history: string[];
+  history: HistoryPath[];
   path: string;
   selected: Dir<string>[];
   search: {
@@ -15,7 +20,7 @@ export interface OsPath {
     isActive: boolean;
   };
   view: "list" | "icon" | "compact";
-  setHistory: React.Dispatch<React.SetStateAction<string[]>>;
+  setHistory: React.Dispatch<React.SetStateAction<HistoryPath[]>>;
   setPath: React.Dispatch<React.SetStateAction<string>>;
   setSearch: React.Dispatch<React.SetStateAction<OsPath["search"]>>;
   setSelected: React.Dispatch<React.SetStateAction<Dir[]>>;
@@ -49,7 +54,9 @@ export function AppProvider({
   const [path, setPath] = useState(
     [platform.homepath, platform.username].join("/"),
   );
-  const [history, setHistory] = useState(initContext.history);
+  const [history, setHistory] = useState<HistoryPath[]>([
+    { path: [platform.homepath, platform.username].join("/"), isActive: true },
+  ]);
   const [selected, setSelected] = useState(initContext.selected);
   const [search, setSearch] = useState(initContext.search);
   const [view, setView] = useState(initView);
