@@ -39,6 +39,8 @@ type OsPlatform = {
   isMac: boolean;
   isLinux: boolean;
   isWindows: boolean;
+  username: string;
+  homepath: string;
 };
 
 type Dir<N = unknown, I = unknown> = {

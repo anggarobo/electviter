@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AppShell, Box, Grid, ThemeIcon, Text, Flex } from "@mantine/core";
-import { usePathContext } from "../../contexts/path";
+import { useAppContext } from "../../contexts/app";
 import {
   FolderIcon,
   GifIcon,
@@ -30,7 +30,7 @@ const __icon__: { [key: string]: React.ComponentType<any> } = {
 export default function Content() {
   const [isLoading, setIsLoading] = useState(false);
   const [contents, setContents] = useState<Dir[]>([]);
-  const { path, setPath, setHistory, view } = usePathContext();
+  const { path, setPath, setHistory, view } = useAppContext();
 
   const openFolder = async (content: Dir) => {
     const pathName =
@@ -55,8 +55,6 @@ export default function Content() {
 
     channel();
   }, [path]);
-
-  console.log(isLoading);
 
   return (
     <AppShell.Main>

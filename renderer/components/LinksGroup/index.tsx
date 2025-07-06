@@ -16,6 +16,7 @@ interface LinksGroupProps<I = unknown> {
   label: string;
   initiallyOpened?: boolean;
   links?: { label: string; link: string }[];
+  onClick?: () => void;
 }
 
 export default function LinksGroup({
@@ -23,6 +24,7 @@ export default function LinksGroup({
   label,
   initiallyOpened,
   links,
+  onClick,
 }: LinksGroupProps<Icon>) {
   const hasLinks = Array.isArray(links);
   const [opened, setOpened] = useState(initiallyOpened || false);
@@ -42,7 +44,7 @@ export default function LinksGroup({
   return (
     <>
       <UnstyledButton
-        onClick={() => setOpened((o) => !o)}
+        onClick={() => onClick?.() ?? setOpened((o) => !o)}
         className={classes.control}
       >
         <Group justify="space-between" gap={0}>

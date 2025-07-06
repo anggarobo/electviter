@@ -5,7 +5,7 @@ import type { InvokeResult, IpcApiEventKey } from "./ipc/types";
   const ipc = { invoke, on, send };
   const platform = await ipc.invoke("platform");
   const pane = await ipc.invoke("pane");
-  console.log({ platform, pane });
+
   electron.contextBridge.exposeInMainWorld("api", {
     platform,
     pane,

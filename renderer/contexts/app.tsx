@@ -6,6 +6,7 @@ import {
 } from "react";
 
 export interface OsPath {
+  username: string;
   history: string[];
   path: string;
   view: "list" | "icon" | "compact";
@@ -19,18 +20,24 @@ const VIEW_EXP = localStorage.getItem(__VIEW_EXP__) as OsPath["view"];
 const initView: OsPath["view"] = VIEW_EXP || "compact";
 
 const initContext: OsPath = {
+  username: "",
   history: [],
-  path: "/home/angga",
+  path: "/",
   view: initView,
   setHistory: () => {},
   setPath: () => {},
   setView: () => {},
 };
 
-const PathContext = createContext(initContext);
-export const usePathContext = () => useContext(PathContext);
-export function PathProvider({ children }: PropsWithChildren) {
-  const [path, setPath] = useState(initContext.path);
+const AppContext = createContext(initContext);
+export const useAppContext = () => useContext(AppContext);
+export function AppProvider({
+  children,
+  platform,
+}: PropsWithChildren<{ platform: OsPlatform }>) {
+  const [path, setPath] = useState(
+    [platform.homepath, platform.username].join("/"),
+  );
   const [history, setHistory] = useState(initContext.history);
   const [view, setView] = useState(initView);
 
@@ -40,10 +47,18 @@ export function PathProvider({ children }: PropsWithChildren) {
   };
 
   return (
-    <PathContext.Provider
-      value={{ history, path, view, setHistory, setPath, setView: setVewExp }}
+    <AppContext.Provider
+      value={{
+        username: platform.username,
+        history,
+        path,
+        view,
+        setHistory,
+        setPath,
+        setView: setVewExp,
+      }}
     >
       {children}
-    </PathContext.Provider>
+    </AppContext.Provider>
   );
 }

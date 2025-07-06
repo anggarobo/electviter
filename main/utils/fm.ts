@@ -129,11 +129,7 @@ export async function rename(oldPath: string, newPath: string): Promise<void> {
 
 export async function sidepane() {
   const menu: Dir[] = [];
-  const path: Record<OsPlatform["platform"], string> = {
-    win32: "c:\\",
-    linux: "/home",
-    darwin: "/Users",
-  };
+  const homePath = oss.homepath;
   const folders = [
     "desktop",
     "documents",
@@ -143,7 +139,7 @@ export async function sidepane() {
     "videos",
   ];
 
-  const home = await read(path[oss.platform]);
+  const home = await read(homePath);
   const usr = home.find((dir) => dir.name === os.userInfo().username);
   if (usr) {
     menu.push(usr);

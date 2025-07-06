@@ -3,15 +3,12 @@ import "./App.css";
 import useStatistics from "./hooks/useStatistics";
 import useStaticData from "./hooks/useStaticData";
 import { Chart } from "./components/Charts";
-// import Header from "./components/Header";
 import ChartItem from "./components/Charts/Item";
-import useFile from "./hooks/useFile";
 
 function App() {
   const staticData = useStaticData();
   const statistics = useStatistics(10);
   const [activeView, setActiveView] = useState<ViewChangeEvent>("CPU");
-  // const { onOpenFile, onSaveFile } = useFile()
 
   const cpuUsages = useMemo(
     () => statistics.map((stat) => stat.cpuUsage),
