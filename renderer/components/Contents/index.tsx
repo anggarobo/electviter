@@ -1,5 +1,13 @@
-import { useEffect, useState } from "react";
-import { AppShell, Box, Grid, ThemeIcon, Text, Flex } from "@mantine/core";
+import { useEffect, useMemo, useState } from "react";
+import {
+  AppShell,
+  Box,
+  Grid,
+  ThemeIcon,
+  Text,
+  Flex,
+  LoadingOverlay,
+} from "@mantine/core";
 import { useAppContext } from "../../contexts/app";
 import {
   FolderIcon,
@@ -30,7 +38,13 @@ const __icon__: { [key: string]: React.ComponentType<any> } = {
 export default function Content() {
   const [isLoading, setIsLoading] = useState(false);
   const [contents, setContents] = useState<Dir[]>([]);
-  const { path, setPath, setHistory, view } = useAppContext();
+  const { path, setPath, setHistory, view, search } = useAppContext();
+
+  const files = useMemo(() => {
+    return contents.filter((item) =>
+      item?.name?.toLowerCase()?.includes(search.input.toLowerCase()),
+    );
+  }, [search, contents]);
 
   const openFolder = async (content: Dir) => {
     const pathName =
@@ -58,9 +72,16 @@ export default function Content() {
 
   return (
     <AppShell.Main>
-      {view === "list" ? (
+      {isLoading ? (
+        <LoadingOverlay
+          visible
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+          loaderProps={{ color: "royalblue", type: "bars" }}
+        />
+      ) : view === "list" ? (
         <Box>
-          {contents.map((content, i) =>
+          {files.map((content, i) =>
             content.isHidden ? null : (
               <LinksGroup
                 key={`${i}__${content.path}`}
@@ -72,12 +93,11 @@ export default function Content() {
         </Box>
       ) : (
         <Grid>
-          {contents.map((content, i) => {
+          {files.map((content, i) => {
             let Icon: React.ElementType = FolderIcon;
             if (content.isFile) {
               Icon = __icon__[content?.ext || "default"] || DocumentIcon;
             }
-            console.log(content);
 
             return content.isHidden ? null : (
               <Grid.Col

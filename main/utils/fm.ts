@@ -26,7 +26,7 @@ export function visible(filePath: string): Promise<boolean> {
 export async function readinfo(filePath: string): Promise<Dir | null> {
   try {
     const stats = await fse.stat(filePath);
-    let extension = path.extname(filePath).toLocaleLowerCase();
+    let extension = path.extname(filePath).toLowerCase();
     const isImage = IMAGE_EXTENSIONS.includes(extension);
     const invisible = await visible(filePath);
 
@@ -50,13 +50,9 @@ export async function readinfo(filePath: string): Promise<Dir | null> {
     if (!stats.isDirectory() && isImage) {
       try {
         const imageBuffer = await fsp.readFile(filePath);
-        const dim = sizeOf.imageSize(imageBuffer);
-        fileInfo.image = {
-          width: dim.width || 0,
-          height: dim.height || 0,
-          type: dim.type || "",
-        };
-        fileInfo.ext = dim.type;
+        const imageDimension = sizeOf.imageSize(imageBuffer);
+        fileInfo.image = imageDimension;
+        fileInfo.ext = imageDimension.type;
       } catch (error) {
         console.error(`Fail to read image dimension`, error);
       }

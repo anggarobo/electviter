@@ -9,9 +9,16 @@ export interface OsPath {
   username: string;
   history: string[];
   path: string;
+  selected: Dir<string>[];
+  search: {
+    input: string;
+    isActive: boolean;
+  };
   view: "list" | "icon" | "compact";
   setHistory: React.Dispatch<React.SetStateAction<string[]>>;
   setPath: React.Dispatch<React.SetStateAction<string>>;
+  setSearch: React.Dispatch<React.SetStateAction<OsPath["search"]>>;
+  setSelected: React.Dispatch<React.SetStateAction<Dir[]>>;
   setView: (value: OsPath["view"]) => void;
 }
 
@@ -23,9 +30,13 @@ const initContext: OsPath = {
   username: "",
   history: [],
   path: "/",
+  selected: [],
+  search: { input: "", isActive: false },
   view: initView,
   setHistory: () => {},
   setPath: () => {},
+  setSearch: () => {},
+  setSelected: () => {},
   setView: () => {},
 };
 
@@ -39,6 +50,8 @@ export function AppProvider({
     [platform.homepath, platform.username].join("/"),
   );
   const [history, setHistory] = useState(initContext.history);
+  const [selected, setSelected] = useState(initContext.selected);
+  const [search, setSearch] = useState(initContext.search);
   const [view, setView] = useState(initView);
 
   const setVewExp = (value: OsPath["view"]) => {
@@ -52,9 +65,13 @@ export function AppProvider({
         username: platform.username,
         history,
         path,
+        search,
+        selected,
         view,
         setHistory,
         setPath,
+        setSearch,
+        setSelected,
         setView: setVewExp,
       }}
     >

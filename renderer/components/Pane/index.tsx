@@ -7,10 +7,11 @@ import { useAppContext } from "../../contexts/app";
 
 export default function () {
   const [items, setItems] = useState<Dir<string, Icon>[]>([]);
-  const { setPath } = useAppContext();
+  const { setPath, setSearch } = useAppContext();
 
   const onNavigate = (path: string) => {
     setPath(path);
+    setSearch({ input: "", isActive: false });
   };
 
   useEffect(() => {

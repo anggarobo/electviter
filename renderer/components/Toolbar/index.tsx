@@ -13,6 +13,7 @@ import {
   Burger,
   Combobox,
   Flex,
+  FocusTrap,
   Group,
   TextInput,
   ThemeIcon,
@@ -20,17 +21,19 @@ import {
 } from "@mantine/core";
 import type { UseDisclosureReturnValue } from "@mantine/hooks";
 import { useAppContext, type OsPath } from "../../contexts/app";
+import { useState } from "react";
 
 export default function ({
   disclosure,
 }: {
   disclosure: UseDisclosureReturnValue;
 }) {
-  const { path, setPath, history, setView, view } = useAppContext();
+  const { path, setPath, history, setView, view, ...ctx } = useAppContext();
   const [opened, { toggle }] = disclosure;
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
+  const [dirPath, setDirPath] = useState("");
 
   const views: OsPath["view"][] = ["icon", "list", "compact"];
   const viewIcons: Record<string, React.ElementType> = {
@@ -53,6 +56,27 @@ export default function ({
       </Combobox.Option>
     );
   });
+
+  const onDirChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    setDirPath(e.currentTarget.value);
+  };
+
+  const onActivateSearch: React.MouseEventHandler<HTMLButtonElement> = () => {
+    ctx.setSearch((prev) => ({
+      input: "",
+      isActive: !prev.isActive,
+    }));
+  };
+
+  const onSearch: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    ctx.setSearch((prev) => ({ ...prev, input: e.target.value }));
+  };
+
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    setPath(dirPath);
+    setDirPath("");
+  };
 
   const onBack = () => {
     const f = history.indexOf(path);
@@ -83,16 +107,27 @@ export default function ({
             <HomeIcon />
           </ThemeIcon>
         </ActionIcon>
-        <TextInput
-          flex={1}
-          size="sm"
-          radius="md"
-          value={path}
-          onChange={(e) => {
-            setPath(e.currentTarget.value);
-          }}
-        />
-        <ActionIcon variant="transparent">
+        {ctx.search.isActive ? (
+          <FocusTrap active>
+            <TextInput
+              flex={1}
+              size="sm"
+              radius="md"
+              value={ctx.search.input}
+              onChange={onSearch}
+            />
+          </FocusTrap>
+        ) : (
+          <form onSubmit={onSubmit} style={{ flex: 1 }}>
+            <TextInput
+              size="sm"
+              radius="md"
+              value={dirPath || path}
+              onChange={onDirChange}
+            />
+          </form>
+        )}
+        <ActionIcon onClick={onActivateSearch} variant="transparent">
           <ThemeIcon variant="transparent" size={24}>
             <MagnifyingGlassIcon />
           </ThemeIcon>
