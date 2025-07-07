@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AppShell,
   Box,
@@ -38,7 +38,8 @@ const __icon__: { [key: string]: React.ComponentType<any> } = {
 export default function Content() {
   const [isLoading, setIsLoading] = useState(false);
   const [contents, setContents] = useState<Dir[]>([]);
-  const { path, setPath, setHistory, view, search } = useAppContext();
+  const { path, setPath, setHistory, view, search, setSearch } =
+    useAppContext();
 
   const files = useMemo(() => {
     return contents.filter((item) =>
@@ -46,11 +47,29 @@ export default function Content() {
     );
   }, [search, contents]);
 
+  // TODO: fixe me
   const openFolder = async (content: Dir) => {
-    const pathName =
-      path[-1] === "/" ? path + content.name : path + "/" + content.name;
-    setPath(pathName);
-    setHistory((prev) => [...prev, pathName]);
+    if (content.isDirectory) {
+      const pathName =
+        path[-1] === "/" ? path + content.name : path + "/" + content.name;
+      setPath(pathName);
+      setHistory((prev) => {
+        const currentId = prev.findIndex((item) => item.isActive);
+        const currentActiveId = prev.findIndex(
+          (item) => item.path === pathName && item.isActive,
+        );
+        const currentPath = prev.find(
+          (item) => item.path === pathName && item.isActive,
+        );
+        // console.log({currentId, prev, content, pathName})
+        const result = [
+          ...prev.map((item) => ({ ...item, isActive: false })),
+          { path: pathName, isActive: true },
+        ];
+        return result;
+      });
+      setSearch({ input: "", isActive: false });
+    }
   };
 
   useEffect(() => {

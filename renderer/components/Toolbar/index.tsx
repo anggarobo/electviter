@@ -61,7 +61,7 @@ export default function ({
     setDirPath(e.currentTarget.value);
   };
 
-  const onActivateSearch: React.MouseEventHandler<HTMLButtonElement> = () => {
+  const toggleSearch: React.MouseEventHandler<HTMLButtonElement> = () => {
     ctx.setSearch((prev) => ({
       input: "",
       isActive: !prev.isActive,
@@ -72,48 +72,65 @@ export default function ({
     ctx.setSearch((prev) => ({ ...prev, input: e.target.value }));
   };
 
-  const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPath(dirPath);
     setDirPath("");
+    ctx.setHistory((prev) => {
+      const currId = prev.findIndex((item) => item.path === dirPath);
+      const next = currId < 0 ? [{ path: dirPath, isActive: true }] : [];
+      const temp = prev.map((item, id) => {
+        if (id === currId) return { ...item, isActive: true };
+        return { ...item, isActive: false };
+      });
+      return [...temp, ...next];
+    });
   };
 
-  const disabledUndo = useMemo(() => {
-    const currentPath = history.findIndex((item) => item.isActive);
-    return currentPath === 0;
+  const disable = useMemo(() => {
+    const current = history.findIndex((item) => item.isActive);
+    return {
+      undo: current === 0,
+      redo: current === history.length - 1,
+      parent: ctx.os.isWindows ? path === ctx.os.homepath : path === "/",
+    };
   }, [path, history]);
 
-  const disabledRedo = useMemo(() => {
-    const currentPath = history.findIndex((item) => item.isActive);
-    return currentPath === history.length - 1;
-  }, [path, history]);
-
-  const onUndo = () => {
-    const index = history.findIndex((hist) => hist.isActive);
-    const next = history[index - 1];
-    setPath(next.path);
-    ctx.setHistory((prev) =>
-      prev.map((item) => {
-        if (item.isActive) return { ...item, isActive: false };
-        if (item.path === next.path) return { ...item, isActive: true };
-        return item;
-      }),
-    );
+  // TODO: fixe me
+  const onChangeParentPath = () => {
     ctx.setSearch({ input: "", isActive: false });
+    const defaultPath = ctx.os.isWindows ? ctx.os.homepath : "/";
+    const parentPath = path.split("/").slice(0, -1).join("/") || defaultPath;
+    setPath(parentPath);
+    ctx.setHistory((prev) => {
+      const currentIndex = prev.findIndex((item) => item.isActive);
+      const prevItem =
+        prev
+          .slice(0, currentIndex - 1)
+          .map((item) => ({ ...item, isActive: false })) || [];
+      const nextItem =
+        prev
+          .slice(currentIndex + 1, prev.length - 1)
+          .map((item) => ({ ...item, isActive: false })) || [];
+      console.log({ currentIndex, prev, prevItem, nextItem });
+      return [...prevItem, { path: parentPath, isActive: true }, ...nextItem];
+    });
   };
 
-  const onRedo = () => {
-    const index = history.findIndex((hist) => hist.isActive);
-    const next = history[index + 1];
-    setPath(next.path);
-    ctx.setHistory((prev) =>
-      prev.map((item) => {
-        if (item.isActive) return { ...item, isActive: false };
-        if (item.path === next.path) return { ...item, isActive: true };
-        return item;
-      }),
-    );
+  const onHistoryPath = (event: "undo" | "redo") => {
     ctx.setSearch({ input: "", isActive: false });
+    ctx.setHistory((prev) => {
+      let currentId = prev.findIndex((item) => item.isActive);
+      const nextId = event === "undo" ? currentId - 1 : currentId + 1;
+      const next = prev[nextId];
+      setPath(next.path);
+
+      return prev.map((item, index) => {
+        if (item.isActive) return { ...item, isActive: false };
+        if (index === nextId) return { ...item, isActive: true };
+        return item;
+      });
+    });
   };
 
   return (
@@ -121,8 +138,8 @@ export default function ({
       <Group h="100%" px="md">
         <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
         <ActionIcon
-          disabled={disabledUndo}
-          onClick={onUndo}
+          disabled={disable.undo}
+          onClick={() => onHistoryPath("undo")}
           variant="transparent"
         >
           <ThemeIcon variant="transparent" size={24}>
@@ -130,8 +147,8 @@ export default function ({
           </ThemeIcon>
         </ActionIcon>
         <ActionIcon
-          disabled={disabledRedo}
-          onClick={onRedo}
+          disabled={disable.redo}
+          onClick={() => onHistoryPath("redo")}
           variant="transparent"
         >
           <ThemeIcon variant="transparent" size={24}>
@@ -139,8 +156,8 @@ export default function ({
           </ThemeIcon>
         </ActionIcon>
         <ActionIcon
-          disabled={disabledUndo}
-          onClick={onUndo}
+          disabled={disable.parent}
+          onClick={onChangeParentPath}
           variant="transparent"
         >
           <ThemeIcon variant="transparent" size={24}>
@@ -172,7 +189,7 @@ export default function ({
             />
           </form>
         )}
-        <ActionIcon onClick={onActivateSearch} variant="transparent">
+        <ActionIcon onClick={toggleSearch} variant="transparent">
           <ThemeIcon variant="transparent" size={24}>
             <MagnifyingGlassIcon />
           </ThemeIcon>

@@ -5,7 +5,7 @@ import {
   type PropsWithChildren,
 } from "react";
 
-interface HistoryPath {
+export interface HistoryPath {
   path: string;
   isActive: boolean;
 }
@@ -14,6 +14,7 @@ export interface OsPath {
   username: string;
   history: HistoryPath[];
   path: string;
+  os: OsPlatform;
   selected: Dir<string>[];
   search: {
     input: string;
@@ -35,6 +36,14 @@ const initContext: OsPath = {
   username: "",
   history: [],
   path: "/",
+  os: {
+    homepath: "/",
+    isLinux: false,
+    isMac: false,
+    isWindows: false,
+    platform: "",
+    username: "",
+  },
   selected: [],
   search: { input: "", isActive: false },
   view: initView,
@@ -72,6 +81,7 @@ export function AppProvider({
         username: platform.username,
         history,
         path,
+        os: platform,
         search,
         selected,
         view,

@@ -9,14 +9,13 @@ export default function () {
   const [items, setItems] = useState<Dir<string, Icon>[]>([]);
   const { setPath, setSearch, setHistory } = useAppContext();
 
+  // TODO: fixe me
   const onNavigate = (path: string) => {
     setPath(path);
-    setHistory((prev) => {
-      return [
-        ...prev.map((items) => ({ ...items, isActive: false })),
-        { path, isActive: true },
-      ];
-    });
+    setHistory((prev) => [
+      ...prev.map((item) => ({ ...item, isActive: false })),
+      { path, isActive: true },
+    ]);
     setSearch({ input: "", isActive: false });
   };
 
