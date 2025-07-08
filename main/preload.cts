@@ -15,6 +15,8 @@ import type { InvokeResult, IpcApiEventKey } from "./ipc/types";
       },
       readdir: async (path) =>
         ipc.invoke<"file:read", string, Dir[]>("file:read", path),
+      showContextMenu: () =>
+        ipc.invoke<"show-context-menu">("show-context-menu"),
     },
   } satisfies Window["api"]);
 })();

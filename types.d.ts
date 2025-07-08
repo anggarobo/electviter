@@ -84,6 +84,7 @@ interface Window {
     ipc: {
       console: () => void;
       readdir: (path: string) => Promise<Dir[] | undefined>;
+      showContextMenu: () => void;
     };
     platform: OsPlatform;
     pane: Dir[];

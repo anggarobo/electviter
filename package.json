@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "electron-context-menu": "^4.1.0",
     "fs-extra": "^11.3.0",
     "image-size": "^2.0.2",
     "os-utils": "^0.0.14",

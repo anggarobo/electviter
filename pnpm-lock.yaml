@@ -10,6 +10,9 @@ importers:
       "@heroicons/react":
         specifier: ^2.2.0
         version: 2.2.0(react@19.1.0)
+      electron-context-menu:
+        specifier: ^4.1.0
+        version: 4.1.0
       fs-extra:
         specifier: ^11.3.0
         version: 11.3.0
@@ -2137,6 +2140,27 @@ packages:
     engines: { node: ">=14.0.0" }
     hasBin: true
 
+  electron-context-menu@4.1.0:
+    resolution:
+      {
+        integrity: sha512-mvV7YAIaAvMdxqkdDDHXehe5FPyFKXOyuJqgLwXSrWRjdmDBZQREvgcphKbAVgFU5XjYG5R6PAL00+b8Q6SKqg==,
+      }
+    engines: { node: ">=18" }
+
+  electron-dl@4.0.0:
+    resolution:
+      {
+        integrity: sha512-USiB9816d2JzKv0LiSbreRfTg5lDk3lWh0vlx/gugCO92ZIJkHVH0UM18EHvKeadErP6Xn4yiTphWzYfbA2Ong==,
+      }
+    engines: { node: ">=18" }
+
+  electron-is-dev@3.0.1:
+    resolution:
+      {
+        integrity: sha512-8TjjAh8Ec51hUi3o4TaU0mD3GMTOESi866oRNavj9A3IQJ7pmv+MJVmdZBFGw4GFT36X7bkqnuDNYvkQgvyI8Q==,
+      }
+    engines: { node: ">=18" }
+
   electron-publish@26.0.11:
     resolution:
       {
@@ -2269,12 +2293,26 @@ packages:
       }
     engines: { node: ">=6" }
 
+  escape-goat@4.0.0:
+    resolution:
+      {
+        integrity: sha512-2Sd4ShcWxbx6OY1IHyla/CVNwvg7XwZVoXZHcSu9w9SReNP1EzzD5T8NWKIR38fIqEns9kDWKUQTXXAmlDrdPg==,
+      }
+    engines: { node: ">=12" }
+
   escape-string-regexp@4.0.0:
     resolution:
       {
         integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==,
       }
     engines: { node: ">=10" }
+
+  escape-string-regexp@5.0.0:
+    resolution:
+      {
+        integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==,
+      }
+    engines: { node: ">=12" }
 
   eslint-plugin-react-hooks@5.2.0:
     resolution:
@@ -2373,6 +2411,20 @@ packages:
       {
         integrity: sha512-8QxYTVXUkuy7fIIoitQkPwGonB8F3Zj8eEO8Sqg9Zv/bkI7RJAzowee4gr81Hak/dUTpA2Z7VfQgoijjPNlUZA==,
       }
+
+  ext-list@2.2.2:
+    resolution:
+      {
+        integrity: sha512-u+SQgsubraE6zItfVA0tBuCBhfU9ogSRnsvygI7wht9TS510oLkBRXBsqopeUG/GBOIQyKZO9wjTqIu/sf5zFA==,
+      }
+    engines: { node: ">=0.10.0" }
+
+  ext-name@5.0.0:
+    resolution:
+      {
+        integrity: sha512-yblEwXAbGv1VQDmow7s38W77hzAgJAO50ztBLMcUyUBfxv1HC+LGwtiEN+Co6LtlqT/5uwVOxsD4TNIilWhwdQ==,
+      }
+    engines: { node: ">=4" }
 
   extract-zip@2.0.1:
     resolution:
@@ -2967,6 +3019,13 @@ packages:
       }
     engines: { node: ">=0.12.0" }
 
+  is-plain-obj@1.1.0:
+    resolution:
+      {
+        integrity: sha512-yvkRyxmFKEOQ4pNXCmJG5AEQNlXJS5LaONXo5/cLdTZdWvsZ1ioJEonLGAosKlMWE8lwUy/bJzMjcw8az73+Fg==,
+      }
+    engines: { node: ">=0.10.0" }
+
   is-unicode-supported@0.1.0:
     resolution:
       {
@@ -3551,6 +3610,13 @@ packages:
       }
     engines: { node: ">=8" }
 
+  path-exists@5.0.0:
+    resolution:
+      {
+        integrity: sha512-RjhtfwJOxzcFmNOi6ltcbcu4Iu+FL3zEj83dk4kAS+fVpTxXLO1b38RvJgT/0QwvV/L3aY9TAnyv0EOqW4GoMQ==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+
   path-is-absolute@1.0.1:
     resolution:
       {
@@ -3745,6 +3811,13 @@ packages:
         integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==,
       }
     engines: { node: ">=6" }
+
+  pupa@3.1.0:
+    resolution:
+      {
+        integrity: sha512-FLpr4flz5xZTSJxSeaheeMKN/EDzMdK7b8PTOC6a5PYFKTucWbdqjgqaEyH0shFiSJrVB1+Qqi4Tk19ccU6Aug==,
+      }
+    engines: { node: ">=12.20" }
 
   queue-microtask@1.2.3:
     resolution:
@@ -4162,6 +4235,20 @@ packages:
       }
     engines: { node: ">= 10.0.0", npm: ">= 3.0.0" }
 
+  sort-keys-length@1.0.1:
+    resolution:
+      {
+        integrity: sha512-GRbEOUqCxemTAk/b32F2xa8wDTs+Z1QHOkbhJDQTvv/6G3ZkbJ+frYWsTcc7cBB3Fu4wy4XlLCuNtJuMn7Gsvw==,
+      }
+    engines: { node: ">=0.10.0" }
+
+  sort-keys@1.1.2:
+    resolution:
+      {
+        integrity: sha512-vzn8aSqKgytVik0iwdBEi+zevbTYZogewTUM6dtpmGwEcdzbub/TX4bCzRhebDCRC3QzXgJsLRKB2V/Oof7HXg==,
+      }
+    engines: { node: ">=0.10.0" }
+
   source-map-js@1.2.1:
     resolution:
       {
@@ -4458,6 +4545,13 @@ packages:
         integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==,
       }
     engines: { node: ">= 10.0.0" }
+
+  unused-filename@4.0.1:
+    resolution:
+      {
+        integrity: sha512-ZX6U1J04K1FoSUeoX1OicAhw4d0aro2qo+L8RhJkiGTNtBNkd/Fi1Wxoc9HzcVu6HfOzm0si/N15JjxFmD1z6A==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
 
   update-browserslist-db@1.1.3:
     resolution:
@@ -6028,6 +6122,20 @@ snapshots:
       - electron-builder-squirrel-windows
       - supports-color
 
+  electron-context-menu@4.1.0:
+    dependencies:
+      cli-truncate: 4.0.0
+      electron-dl: 4.0.0
+      electron-is-dev: 3.0.1
+
+  electron-dl@4.0.0:
+    dependencies:
+      ext-name: 5.0.0
+      pupa: 3.1.0
+      unused-filename: 4.0.1
+
+  electron-is-dev@3.0.1: {}
+
   electron-publish@26.0.11:
     dependencies:
       "@types/fs-extra": 9.0.13
@@ -6134,7 +6242,11 @@ snapshots:
 
   escalade@3.2.0: {}
 
+  escape-goat@4.0.0: {}
+
   escape-string-regexp@4.0.0: {}
+
+  escape-string-regexp@5.0.0: {}
 
   eslint-plugin-react-hooks@5.2.0(eslint@9.30.0):
     dependencies:
@@ -6214,6 +6326,15 @@ snapshots:
   eventemitter3@5.0.1: {}
 
   exponential-backoff@3.1.2: {}
+
+  ext-list@2.2.2:
+    dependencies:
+      mime-db: 1.52.0
+
+  ext-name@5.0.0:
+    dependencies:
+      ext-list: 2.2.2
+      sort-keys-length: 1.0.1
 
   extract-zip@2.0.1:
     dependencies:
@@ -6573,6 +6694,8 @@ snapshots:
 
   is-number@7.0.0: {}
 
+  is-plain-obj@1.1.0: {}
+
   is-unicode-supported@0.1.0: {}
 
   isbinaryfile@4.0.10: {}
@@ -6899,6 +7022,8 @@ snapshots:
 
   path-exists@4.0.0: {}
 
+  path-exists@5.0.0: {}
+
   path-is-absolute@1.0.1: {}
 
   path-key@3.1.1: {}
@@ -6991,6 +7116,10 @@ snapshots:
       once: 1.4.0
 
   punycode@2.3.1: {}
+
+  pupa@3.1.0:
+    dependencies:
+      escape-goat: 4.0.0
 
   queue-microtask@1.2.3: {}
 
@@ -7253,6 +7382,14 @@ snapshots:
       ip-address: 9.0.5
       smart-buffer: 4.2.0
 
+  sort-keys-length@1.0.1:
+    dependencies:
+      sort-keys: 1.1.2
+
+  sort-keys@1.1.2:
+    dependencies:
+      is-plain-obj: 1.1.0
+
   source-map-js@1.2.1: {}
 
   source-map-support@0.5.21:
@@ -7412,6 +7549,11 @@ snapshots:
   universalify@0.1.2: {}
 
   universalify@2.0.1: {}
+
+  unused-filename@4.0.1:
+    dependencies:
+      escape-string-regexp: 5.0.0
+      path-exists: 5.0.0
 
   update-browserslist-db@1.1.3(browserslist@4.25.1):
     dependencies:

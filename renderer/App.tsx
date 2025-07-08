@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { createTheme, LoadingOverlay, MantineProvider } from "@mantine/core";
 import Layout from "./components/Layout";
 import { AppProvider } from "./contexts/app";
@@ -14,6 +14,17 @@ export default function App() {
   useLayoutEffect(() => {
     const os = window.api.platform;
     if (os) setPlatform(os);
+  }, []);
+
+  useEffect(() => {
+    const contextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      window.api.ipc.showContextMenu();
+    };
+
+    window.addEventListener("contextmenu", contextMenu);
+
+    return () => window.removeEventListener("contextmenu", contextMenu);
   }, []);
 
   return (
