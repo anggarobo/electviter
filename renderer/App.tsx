@@ -18,8 +18,15 @@ export default function App() {
 
   useEffect(() => {
     const contextMenu = (e: MouseEvent) => {
-      e.preventDefault();
-      window.api.ipc.showContextMenu();
+      const target = e.target as HTMLElement;
+
+      const content = document.getElementById("id-context-menu-layout");
+      if (content && content.contains(target)) {
+        e.preventDefault();
+        window.api.ipc.showContextMenu();
+      } else {
+        console.log("Right-clicked outside target — do nothing");
+      }
     };
 
     window.addEventListener("contextmenu", contextMenu);

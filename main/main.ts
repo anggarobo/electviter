@@ -65,7 +65,7 @@ app.on("ready", () => {
     mainWindow.webContents.toggleDevTools();
   });
 
-  initIpc();
+  initIpc(mainWindow);
 });
 
 app.on("will-quit", () => {

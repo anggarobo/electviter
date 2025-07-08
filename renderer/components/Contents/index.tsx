@@ -90,7 +90,7 @@ export default function Content() {
   }, [path]);
 
   return (
-    <AppShell.Main>
+    <AppShell.Main id="id-context-menu-layout">
       {isLoading ? (
         <LoadingOverlay
           visible

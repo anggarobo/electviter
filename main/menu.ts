@@ -127,9 +127,3 @@ export function createMenu(mainWindow: BrowserWindow) {
     ctxMenu.popup({ window: mainWindow });
   });
 }
-
-export const contextMenu = Menu.buildFromTemplate([
-  { label: "Copy", click: () => console.log("Copied") },
-  { label: "Cur", click: () => console.log("Cut") },
-  { label: "Paste", click: () => console.log("Pasted") },
-]);
