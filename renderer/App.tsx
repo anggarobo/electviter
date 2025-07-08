@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { createTheme, LoadingOverlay, MantineProvider } from "@mantine/core";
 import Layout from "./components/Layout";
 import { AppProvider } from "./contexts/app";
@@ -14,24 +14,6 @@ export default function App() {
   useLayoutEffect(() => {
     const os = window.api.platform;
     if (os) setPlatform(os);
-  }, []);
-
-  useEffect(() => {
-    const contextMenu = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-
-      const content = document.getElementById("id-context-menu-layout");
-      if (content && content.contains(target)) {
-        e.preventDefault();
-        window.api.ipc.showContextMenu();
-      } else {
-        console.log("Right-clicked outside target — do nothing");
-      }
-    };
-
-    window.addEventListener("contextmenu", contextMenu);
-
-    return () => window.removeEventListener("contextmenu", contextMenu);
   }, []);
 
   return (

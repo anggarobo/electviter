@@ -16,27 +16,36 @@ export default function (mainWindow: BrowserWindow) {
   ipc.handle("pane", async () => await fm.sidepane());
   ipc.handle("platform", () => os);
 
-  ipcMain.handle("show-context-menu", async (event: IpcMainInvokeEvent) => {
-    if (event.sender) {
-      const win = BrowserWindow.fromWebContents(event.sender);
-      const menu = Menu.buildFromTemplate([
-        { label: "Copy", click: () => console.log("Copied") },
-        { label: "Cur", click: () => console.log("Cut") },
-        { label: "Paste", click: () => console.log("Pasted") },
-        {
-          label: "Inspect Element",
-          click: () => mainWindow.webContents.toggleDevTools(),
-          visible: env.isDev,
-        },
-      ]);
-      if (win) {
-        menu.popup({ window: win });
+  ipcMain.handle(
+    "show-context-menu",
+    async (event: IpcMainInvokeEvent, payload: ContextMenuPayload) => {
+      if (event.sender) {
+        let clipboardCopyPath: string;
+        // TODO: fix copy paste context menu below
+        const win = BrowserWindow.fromWebContents(event.sender);
+        const menu = Menu.buildFromTemplate([
+          { label: "Copy", click: () => (clipboardCopyPath = payload.src) },
+          { label: "Cut", click: () => fm.move(payload.src, payload.dest) },
+          {
+            label: "Paste",
+            click: () => fm.paste(clipboardCopyPath, payload.dest),
+          },
+          { label: "Delete", click: () => fm.remove(payload.src) },
+          {
+            label: "Inspect Element",
+            click: () => mainWindow.webContents.toggleDevTools(),
+            visible: env.isDev,
+          },
+        ]);
+        if (win) {
+          menu.popup({ window: win });
+        } else {
+          console.warn("No window found for event.sender");
+        }
       } else {
-        console.warn("No window found for event.sender");
+        console.warn("event.sender is undefined");
       }
-    } else {
-      console.warn("event.sender is undefined");
-    }
-    return null;
-  });
+      return null;
+    },
+  );
 }

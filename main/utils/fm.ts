@@ -7,6 +7,7 @@ import os from "os";
 import oss from "./os.js";
 
 const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
+let clipboardCopyPath: string | null = null;
 
 export function visible(filePath: string): Promise<boolean> {
   const base = path.basename(filePath);
@@ -94,6 +95,14 @@ export async function copy(src: string, dest: string): Promise<void> {
   } catch (err) {
     console.error(`fail to copy: ${(err as Error).message}`);
   }
+}
+
+export async function copyClipboard(src: string): Promise<void> {
+  clipboardCopyPath = src;
+}
+
+export async function paste(src: string, dest: string): Promise<void> {
+  await copy(src, dest);
 }
 
 export async function move(src: string, dest: string): Promise<void> {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   AppShell,
   Box,
@@ -38,7 +38,7 @@ const __icon__: { [key: string]: React.ComponentType<any> } = {
 export default function Content() {
   const [isLoading, setIsLoading] = useState(false);
   const [contents, setContents] = useState<Dir[]>([]);
-  const { path, setPath, setHistory, view, search, setSearch } =
+  const { path, setPath, setHistory, view, search, setSearch, ...ctx } =
     useAppContext();
 
   const files = useMemo(() => {
@@ -100,15 +100,23 @@ export default function Content() {
         />
       ) : view === "list" ? (
         <Box>
-          {files.map((content, i) =>
-            content.isHidden ? null : (
+          {files.map((content, i) => {
+            const selected = ctx.selected.find(
+              (item) => item.path === content.path,
+            );
+            const selectedClassname = selected ? "selected-file" : "";
+
+            return content.isHidden ? null : (
               <LinksGroup
                 key={`${i}__${content.path}`}
                 label={content.name}
                 icon={content.isDirectory ? FolderIcon : DocumentIcon}
+                onClick={() => ctx.setSelected([content])}
+                className={selectedClassname}
+                onDoubleClick={() => openFolder(content)}
               />
-            ),
-          )}
+            );
+          })}
         </Box>
       ) : (
         <Grid>
@@ -117,15 +125,20 @@ export default function Content() {
             if (content.isFile) {
               Icon = __icon__[content?.ext || "default"] || DocumentIcon;
             }
+            const selected = ctx.selected.find(
+              (item) => item.path === content.path,
+            );
+            const selectedClassname = selected ? "selected-file" : "";
 
             return content.isHidden ? null : (
               <Grid.Col
                 key={`${i}__${content.path}`}
                 onDoubleClick={() => openFolder(content)}
+                onClick={() => ctx.setSelected([content])}
                 span={view === "icon" ? 2 : 4}
               >
                 <Flex
-                  className="box-content--x"
+                  className={"box-content--x" + " " + selectedClassname}
                   align="center"
                   direction={view === "icon" ? "column" : "row"}
                 >

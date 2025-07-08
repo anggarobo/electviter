@@ -68,6 +68,11 @@ type ApiEvent<K extends string = unknown, V = unknown> = {
   [key in K]: V;
 };
 
+type ContextMenuPayload = {
+  src: string;
+  dest: string;
+};
+
 type ApiEventKey<K = unknown, V = unknown> = keyof ApiEvent<K, V>;
 interface Window {
   electron: {
@@ -84,7 +89,7 @@ interface Window {
     ipc: {
       console: () => void;
       readdir: (path: string) => Promise<Dir[] | undefined>;
-      showContextMenu: () => void;
+      showContextMenu: (payload?: ContextMenuPayload) => void;
     };
     platform: OsPlatform;
     pane: Dir[];
