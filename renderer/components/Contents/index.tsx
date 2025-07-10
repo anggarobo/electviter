@@ -8,7 +8,7 @@ import {
   Flex,
   LoadingOverlay,
 } from "@mantine/core";
-import { useAppContext } from "../../contexts/app";
+import { useAppContext, type HistoryPath } from "../../contexts/app";
 import {
   FolderIcon,
   GifIcon,
@@ -54,19 +54,18 @@ export default function Content() {
         path[-1] === "/" ? path + content.name : path + "/" + content.name;
       setPath(pathName);
       setHistory((prev) => {
-        const currentId = prev.findIndex((item) => item.isActive);
-        const currentActiveId = prev.findIndex(
-          (item) => item.path === pathName && item.isActive,
-        );
-        const currentPath = prev.find(
-          (item) => item.path === pathName && item.isActive,
-        );
-        // console.log({currentId, prev, content, pathName})
-        const result = [
-          ...prev.map((item) => ({ ...item, isActive: false })),
-          { path: pathName, isActive: true },
-        ];
-        return result;
+        const temp: HistoryPath[] = [];
+        let stop = false;
+
+        prev.forEach((item) => {
+          if (item.isActive) {
+            stop = true;
+            temp.push({ ...item, isActive: false });
+          }
+          if (!stop) temp.push({ ...item, isActive: false });
+        });
+
+        return [...temp, { path: pathName, isActive: true }];
       });
       setSearch({ input: "", isActive: false });
     }

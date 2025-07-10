@@ -20,7 +20,11 @@ import {
   useCombobox,
 } from "@mantine/core";
 import type { UseDisclosureReturnValue } from "@mantine/hooks";
-import { useAppContext, type OsPath } from "../../contexts/app";
+import {
+  useAppContext,
+  type HistoryPath,
+  type OsPath,
+} from "../../contexts/app";
 import { useMemo, useState } from "react";
 
 export default function ({
@@ -96,24 +100,24 @@ export default function ({
     };
   }, [path, history]);
 
-  // TODO: fixe me
   const onChangeParentPath = () => {
     ctx.setSearch({ input: "", isActive: false });
     const defaultPath = ctx.os.isWindows ? ctx.os.homepath : "/";
     const parentPath = path.split("/").slice(0, -1).join("/") || defaultPath;
     setPath(parentPath);
     ctx.setHistory((prev) => {
-      const currentIndex = prev.findIndex((item) => item.isActive);
-      const prevItem =
-        prev
-          .slice(0, currentIndex - 1)
-          .map((item) => ({ ...item, isActive: false })) || [];
-      const nextItem =
-        prev
-          .slice(currentIndex + 1, prev.length - 1)
-          .map((item) => ({ ...item, isActive: false })) || [];
-      console.log({ currentIndex, prev, prevItem, nextItem });
-      return [...prevItem, { path: parentPath, isActive: true }, ...nextItem];
+      const temp: HistoryPath[] = [];
+      let next = true;
+
+      prev.forEach((item) => {
+        if (item.isActive) {
+          next = false;
+          temp.push({ ...item, isActive: false });
+        }
+        if (next) temp.push({ ...item, isActive: false });
+      });
+
+      return [...temp, { path: parentPath, isActive: true }];
     });
   };
 
