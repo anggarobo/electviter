@@ -3,19 +3,28 @@ import { useEffect, useState } from "react";
 import type { Icon } from "renderer/types";
 import LinksGroup from "../LinksGroup";
 import { FolderIcon } from "@heroicons/react/24/outline";
-import { useAppContext } from "../../contexts/app";
+import { useAppContext, type HistoryPath } from "../../contexts/app";
 
 export default function () {
   const [items, setItems] = useState<Dir<string, Icon>[]>([]);
   const { setPath, setSearch, setHistory } = useAppContext();
 
-  // TODO: fixe me
   const onNavigate = (path: string) => {
     setPath(path);
-    setHistory((prev) => [
-      ...prev.map((item) => ({ ...item, isActive: false })),
-      { path, isActive: true },
-    ]);
+    setHistory((prev) => {
+      const temp: HistoryPath[] = [];
+      let stop = false;
+
+      prev.forEach((item) => {
+        if (item.isActive) {
+          stop = true;
+          temp.push({ ...item, isActive: false });
+        }
+        if (!stop) temp.push({ ...item, isActive: false });
+      });
+
+      return [...temp, { path, isActive: true }];
+    });
     setSearch({ input: "", isActive: false });
   };
 
