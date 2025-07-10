@@ -47,7 +47,6 @@ export default function Content() {
     );
   }, [search, contents]);
 
-  // TODO: fixe me
   const openFolder = async (content: Dir) => {
     if (content.isDirectory) {
       const pathName =
