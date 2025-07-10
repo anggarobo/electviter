@@ -90,7 +90,7 @@ export async function read(dir: string, recursive?: boolean): Promise<Dir[]> {
 
 export async function copy(src: string, dest: string): Promise<void> {
   try {
-    await fse.copy(src, dest);
+    await fse.copy(src, dest, { overwrite: true });
     console.log(`Copied: ${src} → ${dest}`);
   } catch (err) {
     console.error(`fail to copy: ${(err as Error).message}`);
