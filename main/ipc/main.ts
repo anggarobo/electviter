@@ -2,19 +2,30 @@ import { ipcMain, WebContents, WebFrameMain } from "electron";
 import env from "../utils/env.js";
 import { pathToFileURL } from "url";
 import { INDEX_PATH } from "../pathResolver.js";
+import { IpcCallback, IpcHandler, IpcKey } from "./types.js";
 
-function handle<K extends string | unknown, P = undefined>(
-  key: K extends `${string}` ? K : ApiEventKey,
-  handler: (
-    payload?: P extends undefined ? string : P,
-  ) => Promise<ApiEvent[ApiEventKey]> | ApiEvent[ApiEventKey],
+// function handle<K extends string | unknown, P = undefined>(
+//   key: K extends `${string}` ? K : ApiEventKey,
+//   handler: (
+//     payload?: P extends undefined ? string : P,
+//   ) => Promise<ApiEvent[ApiEventKey]> | ApiEvent[ApiEventKey],
+// ) {
+//   ipcMain.handle(key, (event, payload) => {
+//     if (event.senderFrame) {
+//       validateEventFrame(event.senderFrame);
+//     }
+
+//     return handler(payload);
+//   });
+// }
+
+function handle<K, P, R = unknown>(
+  key: IpcKey<K>,
+  callback: IpcCallback<K, P, R> | Promise<IpcCallback<K, P, R>>,
 ) {
-  ipcMain.handle(key, (event, payload) => {
-    if (event.senderFrame) {
-      validateEventFrame(event.senderFrame);
-    }
-
-    return handler(payload);
+  ipcMain.handle(key, async (event, payload) => {
+    if (event.senderFrame) validateEventFrame(event.senderFrame);
+    return (await callback)(event, payload);
   });
 }
 
