@@ -4,32 +4,40 @@ import { pathToFileURL } from "url";
 import { INDEX_PATH } from "../pathResolver.js";
 import { IpcCallback, IpcHandler, IpcKey } from "./types.js";
 
-// function handle<K extends string | unknown, P = undefined>(
-//   key: K extends `${string}` ? K : ApiEventKey,
-//   handler: (
-//     payload?: P extends undefined ? string : P,
-//   ) => Promise<ApiEvent[ApiEventKey]> | ApiEvent[ApiEventKey],
-// ) {
-//   ipcMain.handle(key, (event, payload) => {
-//     if (event.senderFrame) {
-//       validateEventFrame(event.senderFrame);
-//     }
-
-//     return handler(payload);
-//   });
-// }
-
+/**
+ * Registers an IPC handler for a specific key. The handler function can be either
+ * synchronous or an async function returned by a Promise. When an IPC message
+ * is received with the specified key, the provided callback will be executed.
+ *
+ * @template K - The type of the IPC key.
+ * @template P - The type of the payload sent with the IPC message.
+ * @template R - The type of the response returned by the callback. Defaults to unknown.
+ *
+ * @param {IpcKey<K>} key - The unique identifier used to register and listen for a specific IPC channel.
+ * @param {IpcCallback<K, P, R> | Promise<IpcCallback<K, P, R>>} callback - The handler function (or a Promise resolving to it)
+ *        that will be invoked when a message is received on the specified IPC channel.
+ */
 function handle<K, P, R = unknown>(
   key: IpcKey<K>,
   callback: IpcCallback<K, P, R> | Promise<IpcCallback<K, P, R>>,
 ) {
   ipcMain.handle(key, async (event, payload) => {
     if (event.senderFrame) validateEventFrame(event.senderFrame);
-    return (await callback)(event, payload);
+    const invoke = await callback;
+    return invoke(event, payload);
   });
 }
 
-// This function validates the event frame to ensure it is safe and not malicious.
+/**
+ * Validates the source of an IPC event to ensure it originates from a trusted frame.
+ * In development, it allows requests from localhost; in production, it ensures the URL
+ * matches the expected `file://` path to the app's index file.
+ *
+ * @param {WebFrameMain} frame - The frame from which the IPC event originated.
+ *        This is used to inspect the URL and determine if the source is trusted.
+ *
+ * @throws {Error} Throws an error if the frame URL is considered potentially malicious.
+ */
 export function validateEventFrame(frame: WebFrameMain) {
   if (env.isDev && new URL(frame.url).host === "localhost:5777") {
     return;
