@@ -26,31 +26,6 @@ app.on("ready", () => {
   // mainWindow.webContents.openDevTools()
   pollResources(mainWindow);
 
-  ipcMainHandle("getStaticData", () => {
-    return getStaticData();
-  });
-
-  ipcMainOn("sendFrameWindowAction", (payload) => {
-    switch (payload) {
-      case "CLOSE":
-        mainWindow.close();
-        break;
-      case "MINIMIZE":
-        mainWindow.minimize();
-        break;
-      case "MAXIMIZE":
-        if (mainWindow.isMaximized()) {
-          mainWindow.unmaximize();
-        } else {
-          mainWindow.maximize();
-        }
-        break;
-      default:
-        console.warn(`Unknown action: ${payload}`);
-        break;
-    }
-  });
-
   createTray(mainWindow);
   handleCloseEvents(mainWindow);
   createMenu(mainWindow);

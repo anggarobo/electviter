@@ -3,7 +3,7 @@ import * as fm from "../utils/fm.js";
 import ipc from "./main.js";
 import os from "../utils/os.js";
 import env from "../utils/env.js";
-import { IpcHandler } from "./types.js";
+import { getStaticData } from "resourceManager.js";
 
 export default function (mainWindow: BrowserWindow) {
   ipcMain.removeHandler("file:read");
@@ -55,6 +55,35 @@ export default function (mainWindow: BrowserWindow) {
         }
       } else {
         console.warn("event.sender is undefined");
+      }
+    },
+  );
+
+  ipc.handle<"getStaticData", Omit<Statistics, "cpuUsage">>(
+    "getStaticData",
+    () => getStaticData(),
+  );
+
+  ipc.on<"sendFrameWindowAction", FrameWindowAction>(
+    "sendFrameWindowAction",
+    (_, payload) => {
+      switch (payload) {
+        case "CLOSE":
+          mainWindow.close();
+          break;
+        case "MINIMIZE":
+          mainWindow.minimize();
+          break;
+        case "MAXIMIZE":
+          if (mainWindow.isMaximized()) {
+            mainWindow.unmaximize();
+          } else {
+            mainWindow.maximize();
+          }
+          break;
+        default:
+          console.warn(`Unknown action: ${payload}`);
+          break;
       }
     },
   );
