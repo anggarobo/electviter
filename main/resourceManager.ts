@@ -3,7 +3,7 @@ import osUtils from "os-utils";
 import os from "os";
 import type { BrowserWindow } from "electron";
 import env from "./utils/env.js";
-import { electron } from "./ipc/main.js";
+import ipc from "./ipc/main.js";
 
 const POLLING_INTERVAL = 1000; // Default polling interval in milliseconds
 
@@ -15,7 +15,7 @@ const POLLING_INTERVAL = 1000; // Default polling interval in milliseconds
 export function pollResources(mainWindow: BrowserWindow) {
   setInterval(async () => {
     const sysInfo = await getSystemInfo();
-    electron.send("statistics", mainWindow.webContents, sysInfo);
+    ipc.send("statistics", mainWindow.webContents, sysInfo);
   }, POLLING_INTERVAL);
 }
 

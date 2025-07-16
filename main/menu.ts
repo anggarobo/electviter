@@ -1,6 +1,6 @@
 import { app, BrowserWindow, Menu } from "electron";
 import env from "./utils/env.js";
-import { electron } from "./ipc/main.js";
+import ipc from "./ipc/main.js";
 
 export function createMenu(mainWindow: BrowserWindow) {
   Menu.setApplicationMenu(
@@ -62,18 +62,16 @@ export function createMenu(mainWindow: BrowserWindow) {
         submenu: [
           {
             label: "CPU",
-            click: () =>
-              electron.send("changeView", mainWindow.webContents, "CPU"),
+            click: () => ipc.send("changeView", mainWindow.webContents, "CPU"),
           },
           {
             label: "RAM",
-            click: () =>
-              electron.send("changeView", mainWindow.webContents, "RAM"),
+            click: () => ipc.send("changeView", mainWindow.webContents, "RAM"),
           },
           {
             label: "STORAGE",
             click: () =>
-              electron.send("changeView", mainWindow.webContents, "STORAGE"),
+              ipc.send("changeView", mainWindow.webContents, "STORAGE"),
           },
         ],
       },
@@ -83,18 +81,16 @@ export function createMenu(mainWindow: BrowserWindow) {
         submenu: [
           {
             label: "CPU",
-            click: () =>
-              electron.send("changeView", mainWindow.webContents, "CPU"),
+            click: () => ipc.send("changeView", mainWindow.webContents, "CPU"),
           },
           {
             label: "RAM",
-            click: () =>
-              electron.send("changeView", mainWindow.webContents, "RAM"),
+            click: () => ipc.send("changeView", mainWindow.webContents, "RAM"),
           },
           {
             label: "STORAGE",
             click: () =>
-              electron.send("changeView", mainWindow.webContents, "STORAGE"),
+              ipc.send("changeView", mainWindow.webContents, "STORAGE"),
           },
         ],
       },
@@ -104,18 +100,16 @@ export function createMenu(mainWindow: BrowserWindow) {
         submenu: [
           {
             label: "CPU",
-            click: () =>
-              electron.send("changeView", mainWindow.webContents, "CPU"),
+            click: () => ipc.send("changeView", mainWindow.webContents, "CPU"),
           },
           {
             label: "RAM",
-            click: () =>
-              electron.send("changeView", mainWindow.webContents, "RAM"),
+            click: () => ipc.send("changeView", mainWindow.webContents, "RAM"),
           },
           {
             label: "STORAGE",
             click: () =>
-              electron.send("changeView", mainWindow.webContents, "STORAGE"),
+              ipc.send("changeView", mainWindow.webContents, "STORAGE"),
           },
         ],
       },

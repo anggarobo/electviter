@@ -1,6 +1,5 @@
 import { app, BrowserWindow, dialog, globalShortcut } from "electron";
-import { ipcMainHandle, ipcMainOn } from "./util.js";
-import { getStaticData, pollResources } from "./resourceManager.js";
+import { pollResources } from "./resourceManager.js";
 import { ASSETS_PATH, INDEX_PATH, PRELOAD_PATH } from "./pathResolver.js";
 import { createMenu } from "./menu.js";
 import { createTray } from "./tray.js";

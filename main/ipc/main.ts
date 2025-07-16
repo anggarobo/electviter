@@ -79,17 +79,4 @@ function send<Key extends keyof EventPayloadMapping>(
   webContents.send(key, payload);
 }
 
-// function on<Key extends keyof EventPayloadMapping>(
-//   key: Key,
-//   handler: (payload: EventPayloadMapping[Key]) => void,
-// ) {
-//   ipcMain.on(key, (event, payload) => {
-//     if (event.senderFrame) {
-//       validateEventFrame(event.senderFrame);
-//     }
-//     return handler(payload);
-//   });
-// }
-
-export const electron = { on, send };
-export default { handle, on };
+export default { handle, on, send };

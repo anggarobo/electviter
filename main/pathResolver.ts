@@ -1,11 +1,11 @@
 import path from "path";
 import { app } from "electron";
-import { isDev } from "./util.js";
+import env from "utils/env.js";
 
 function getPreloadPath() {
   return path.join(
     app.getAppPath(),
-    isDev() ? "." : "..",
+    env.isDev ? "." : "..",
     "/dist-main/preload.cjs",
   );
 }
@@ -15,7 +15,7 @@ function getStaticPath() {
 }
 
 function getAssetPath() {
-  return path.join(app.getAppPath(), isDev() ? "." : "..", "/assets");
+  return path.join(app.getAppPath(), env.isDev ? "." : "..", "/assets");
 }
 
 export const INDEX_PATH = getStaticPath();
