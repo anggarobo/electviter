@@ -71,6 +71,7 @@ type ApiEvent<K extends string = unknown, V = unknown> = {
 type ContextMenuPayload = {
   src: string;
   dest: string;
+  event?: MouseEvent;
 };
 
 type ApiEventKey<K = unknown, V = unknown> = keyof ApiEvent<K, V>;
@@ -89,7 +90,11 @@ interface Window {
     ipc: {
       console: () => void;
       readdir: (path: string) => Promise<Dir[] | undefined>;
-      showContextMenu: (payload?: ContextMenuPayload) => void;
+      showContextMenu: (
+        event: MouseEvent,
+        payload?: ContextMenuPayload | "close",
+      ) => void;
+      closeContextMenu: () => void;
     };
     platform: OsPlatform;
     pane: Dir[];

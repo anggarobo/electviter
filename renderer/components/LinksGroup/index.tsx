@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ChevronRightIcon } from "@heroicons/react/16/solid";
 import {
   Box,
@@ -7,17 +7,19 @@ import {
   Text,
   ThemeIcon,
   UnstyledButton,
+  type UnstyledButtonProps,
 } from "@mantine/core";
 import classes from "./LinksGroup.module.css";
 import type { Icon } from "renderer/types";
 
-interface LinksGroupProps<I = unknown> {
+interface LinksGroupProps<I = unknown> extends UnstyledButtonProps {
   icon?: I | Icon;
   label: string;
   initiallyOpened?: boolean;
   links?: { label: string; link: string }[];
   onClick?: () => void;
   onDoubleClick?: () => void;
+  onContextMenu?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   className?: string;
 }
 
@@ -29,9 +31,21 @@ export default function LinksGroup({
   links,
   onClick,
   onDoubleClick,
+  onContextMenu,
 }: LinksGroupProps<Icon>) {
   const hasLinks = Array.isArray(links);
   const [opened, setOpened] = useState(initiallyOpened || false);
+
+  const ref = useCallback((ev: HTMLButtonElement) => {
+    if (ev) {
+      ev.oncontextmenu = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Context menu clicked");
+        onClick?.() ?? setOpened((o) => !o);
+      };
+    }
+  }, []);
 
   const items = (hasLinks ? links : []).map((link) => (
     <Text<"a">
@@ -48,9 +62,13 @@ export default function LinksGroup({
   return (
     <>
       <UnstyledButton
+        ref={ref}
         onClick={() => onClick?.() ?? setOpened((o) => !o)}
         onDoubleClick={onDoubleClick}
         className={classes.control + " " + className}
+        onContextMenu={(e) =>
+          onContextMenu?.(e) ?? onClick?.() ?? setOpened((o) => !o)
+        }
       >
         <Group justify="space-between" gap={0}>
           {LinkIcon && (

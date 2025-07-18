@@ -15,12 +15,22 @@ import type { InvokeResult, IpcApiEventKey } from "./ipc/types";
       },
       readdir: async (path) =>
         ipc.invoke<"file:read", string, Dir[]>("file:read", path),
-      showContextMenu: (payload) => {
-        void ipc.invoke<"show-context-menu", ContextMenuPayload>(
+      showContextMenu: (event, payload) => {
+        let contract = payload;
+        if (payload === "close") contract = payload;
+        else {
+          contract = {
+            dest: payload?.dest || "",
+            src: payload?.src || "",
+            event,
+          };
+        }
+        ipc.invoke<"show-context-menu", ContextMenuPayload | "close">(
           "show-context-menu",
-          payload,
+          contract,
         );
       },
+      closeContextMenu: () => ipc.invoke("close-context-menu"),
     },
   } satisfies Window["api"]);
 })();

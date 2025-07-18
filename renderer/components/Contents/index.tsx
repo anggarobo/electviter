@@ -8,7 +8,7 @@ import {
   Flex,
   LoadingOverlay,
 } from "@mantine/core";
-import { useAppContext, type HistoryPath } from "../../contexts/app";
+import { useAppContext } from "../../contexts/app";
 import {
   FolderIcon,
   GifIcon,
@@ -22,6 +22,7 @@ import {
 } from "@heroicons/react/24/outline";
 import "./index.css";
 import LinksGroup from "../LinksGroup";
+import useEventClick from "../../hooks/useEventClick";
 
 const __icon__: { [key: string]: React.ComponentType<any> } = {
   jpg: ImageIcon,
@@ -40,35 +41,13 @@ export default function Content() {
   const [contents, setContents] = useState<Dir[]>([]);
   const { path, setPath, setHistory, view, search, setSearch, ...ctx } =
     useAppContext();
+  const eventClick = useEventClick();
 
   const files = useMemo(() => {
     return contents.filter((item) =>
       item?.name?.toLowerCase()?.includes(search.input.toLowerCase()),
     );
   }, [search, contents]);
-
-  const openFolder = async (content: Dir) => {
-    if (content.isDirectory) {
-      const pathName =
-        path[-1] === "/" ? path + content.name : path + "/" + content.name;
-      setPath(pathName);
-      setHistory((prev) => {
-        const temp: HistoryPath[] = [];
-        let stop = false;
-
-        prev.forEach((item) => {
-          if (item.isActive) {
-            stop = true;
-            temp.push({ ...item, isActive: false });
-          }
-          if (!stop) temp.push({ ...item, isActive: false });
-        });
-
-        return [...temp, { path: pathName, isActive: true }];
-      });
-      setSearch({ input: "", isActive: false });
-    }
-  };
 
   useEffect(() => {
     const channel = async () => {
@@ -109,9 +88,11 @@ export default function Content() {
                 key={`${i}__${content.path}`}
                 label={content.name}
                 icon={content.isDirectory ? FolderIcon : DocumentIcon}
-                onClick={() => ctx.setSelected([content])}
                 className={selectedClassname}
-                onDoubleClick={() => openFolder(content)}
+                {...eventClick(content)}
+                onContextMenu={(e) =>
+                  eventClick(content).onContextMenu(e as unknown as MouseEvent)
+                }
               />
             );
           })}
@@ -131,18 +112,20 @@ export default function Content() {
             return content.isHidden ? null : (
               <Grid.Col
                 key={`${i}__${content.path}`}
-                onDoubleClick={() => openFolder(content)}
-                onClick={() => ctx.setSelected([content])}
                 span={view === "icon" ? 2 : 4}
+                {...eventClick(content)}
+                onContextMenu={() => console.log("onContextMenu", content)}
               >
                 <Flex
                   className={"box-content--x" + " " + selectedClassname}
                   align="center"
                   direction={view === "icon" ? "column" : "row"}
+                  onContextMenu={() => console.log("flex", content)}
                 >
                   <ThemeIcon
                     variant="transparent"
                     size={view === "icon" ? 42 : 24}
+                    onContextMenu={() => console.log("flex", content)}
                   >
                     <Icon />
                   </ThemeIcon>
