@@ -74,6 +74,13 @@ type ContextMenuPayload = {
 };
 
 type ApiEventKey<K = unknown, V = unknown> = keyof ApiEvent<K, V>;
+
+interface SerialApi {
+  listPorts: () => Promise<import("serialport").PortInfo[]>;
+  connect: (path: string, baudRate?: number) => void;
+  onData: (callback: (data: string) => void) => void;
+  sendData: (data: string) => void;
+}
 interface Window {
   electron: {
     subscribeStatistics: (
@@ -93,5 +100,6 @@ interface Window {
     };
     platform: OsPlatform;
     pane: Dir[];
+    serial: SerialApi;
   };
 }

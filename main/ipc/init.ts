@@ -4,6 +4,10 @@ import ipc from "./main.js";
 import os from "../utils/os.js";
 import env from "../utils/env.js";
 import { getStaticData } from "../resourceManager.js";
+import { ReadlineParser, SerialPort } from "serialport";
+
+let port: SerialPort | null = null;
+let parser: ReadlineParser | null = null;
 
 export default function (mainWindow: BrowserWindow) {
   ipcMain.removeHandler("file:read");
@@ -87,4 +91,33 @@ export default function (mainWindow: BrowserWindow) {
       }
     },
   );
+
+  ipcMain.handle("serial-listPorts", async () => {
+    return await SerialPort.list();
+  });
+
+  ipcMain.handle("serial-connect", (event, path: string, baudRate = 9600) => {
+    port = new SerialPort({ path, baudRate });
+    parser = port.pipe(new ReadlineParser({ delimiter: "\r\n" }));
+  });
+
+  ipcMain.on("serial-sendData", (event, data: string) => {
+    if (port && port.isOpen) {
+      port.write(data + "\n");
+    }
+  });
+
+  function setupSerialDataEvents(win: BrowserWindow) {
+    if (parser) {
+      parser.on("data", (data: string) => {
+        win.webContents.send("serial-onData", data);
+      });
+    }
+  }
+
+  // Panggil `setupSerialDataEvents(mainWindow)` setelah `serial-connect`
+  ipcMain.handle("serial-setupEvents", (event) => {
+    // const window = event.sender;
+    setupSerialDataEvents(mainWindow);
+  });
 }

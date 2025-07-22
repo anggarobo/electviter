@@ -117,4 +117,4 @@ This project helped me gain a deeper understanding of how modern front-end tools
 
 ## Screenshot
 
-![image info](./showcases/Screenshot_2025-07-03_07-01-08.png)
+![image info](./showcases/Screenshot_2025-07-22_23-35-39.png)
