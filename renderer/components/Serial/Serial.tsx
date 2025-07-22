@@ -6,7 +6,7 @@ export default function Serial() {
   const [receivedData, setReceivedData] = useState<string>("");
   const [command, setCommand] = useState<string>("");
   const [status, setStatus] = useState<string>("Mencari port...");
-  console.log({ ports, connectedPort, receivedData, command, status });
+  // console.log({ ports, connectedPort, receivedData, command, status });
 
   useEffect(() => {
     async function init() {

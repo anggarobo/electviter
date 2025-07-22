@@ -33,14 +33,22 @@ let parser: ReadlineParser | undefined;
           ipcRenderer.invoke("serial-setupEvents");
         });
       },
-      sendData: (data: string) => {
-        ipcRenderer.send("serial-sendData", data);
-      },
-      onData: (callback: (data: string) => void) => {
+      // Kirim data ke serial port via main process
+      sendData: (data: string) => ipcRenderer.send("serial-send", data),
+      onData: (callback: (data: string) => void) =>
+        ipcRenderer.on("serial-data", (_, data) => callback(data)),
+      onStatus: (callback: (status: string) => void) =>
+        ipcRenderer.on("serial-status", (_, status) => callback(status)),
+    },
+    virtualTcp: {
+      connect: (host: string, port: number) =>
+        ipcRenderer.send("serial-connect", host, port),
+      sendData: (data: string) => ipcRenderer.send("serial-sendData", data),
+      disconnect: () => ipcRenderer.send("serial-disconnect"),
+      onData: (callback: (data: string) => void) =>
         ipcRenderer.on("serial-onData", (_event, data: string) => {
           callback(data);
-        });
-      },
+        }),
     },
   } satisfies Window["api"]);
 })();

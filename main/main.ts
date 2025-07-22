@@ -6,6 +6,8 @@ import { createTray } from "./tray.js";
 import path from "path";
 import initIpc from "./ipc/init.js";
 import env from "./utils/env.js";
+// import virtualTcp from "./tcp.js";
+import serial, { close as serialClose } from "./serial.js";
 
 app.on("ready", () => {
   const mainWindow = new BrowserWindow({
@@ -18,9 +20,13 @@ app.on("ready", () => {
 
   if (env.isDev) {
     mainWindow.loadURL("http://localhost:5777");
+    ``;
   } else {
     mainWindow.loadFile(INDEX_PATH);
   }
+
+  // virtualTcp(mainWindow)
+  serial(mainWindow);
 
   // mainWindow.webContents.openDevTools()
   pollResources(mainWindow);
@@ -45,6 +51,13 @@ app.on("ready", () => {
 app.on("will-quit", () => {
   // unregister all shortcut when app quits
   globalShortcut.unregisterAll();
+});
+
+app.on("window-all-closed", () => {
+  serialClose();
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
 });
 
 function handleCloseEvents(mainWindow: BrowserWindow) {
