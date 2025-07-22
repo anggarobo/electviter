@@ -3,7 +3,7 @@ import * as fm from "../utils/fm.js";
 import ipc from "./main.js";
 import os from "../utils/os.js";
 import env from "../utils/env.js";
-import { getStaticData } from "resourceManager.js";
+import { getStaticData } from "../resourceManager.js";
 
 export default function (mainWindow: BrowserWindow) {
   ipcMain.removeHandler("file:read");
