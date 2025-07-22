@@ -1,12 +1,20 @@
 import { useLayoutEffect, useState } from "react";
-import { createTheme, LoadingOverlay, MantineProvider } from "@mantine/core";
+import {
+  createTheme,
+  LoadingOverlay,
+  MantineProvider,
+  Tabs,
+} from "@mantine/core";
 // import Layout from "./components/Layout";
 import { AppProvider } from "./contexts/app";
 import "@mantine/core/styles.css";
-import Serial from "./components/Serial";
+import Serial from "./components/Serial/Serial";
+import VirtualTcp from "./components/Serial/VirtualTcp";
+import SerialPort from "./components/Serial/SerialPort";
 
 export default function App() {
   const [platform, setPlatform] = useState<OsPlatform | undefined>(undefined);
+  const [activeTab, setActiveTab] = useState<string | null>("2");
   const theme = createTheme({
     fontFamily: "Open Sans, sans-serif",
     primaryColor: "cyan",
@@ -29,7 +37,22 @@ export default function App() {
       ) : (
         <AppProvider platform={platform}>
           {/* <Layout /> */}
-          <Serial />
+          {/* <Serial /> */}
+          <Tabs value={activeTab} onChange={setActiveTab}>
+            <Tabs.List>
+              <Tabs.Tab value="0">Serial List</Tabs.Tab>
+              {/* <Tabs.Tab value="1">Virtual TCP</Tabs.Tab> */}
+              <Tabs.Tab value="2">Serial Port</Tabs.Tab>
+            </Tabs.List>
+
+            <Tabs.Panel value="0">
+              <Serial />
+            </Tabs.Panel>
+            {/* <Tabs.Panel value="1"><VirtualTcp /></Tabs.Panel> */}
+            <Tabs.Panel value="2">
+              <SerialPort />
+            </Tabs.Panel>
+          </Tabs>
         </AppProvider>
       )}
     </MantineProvider>

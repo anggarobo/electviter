@@ -79,6 +79,7 @@ interface SerialApi {
   listPorts: () => Promise<import("serialport").PortInfo[]>;
   connect: (path: string, baudRate?: number) => void;
   onData: (callback: (data: string) => void) => void;
+  onStatus: (callback: (data: string) => void) => void;
   sendData: (data: string) => void;
 }
 interface Window {
@@ -101,5 +102,11 @@ interface Window {
     platform: OsPlatform;
     pane: Dir[];
     serial: SerialApi;
+    virtualTcp: {
+      connect: (host: string, port: number) => void;
+      sendData: (data: string) => void;
+      disconnect: () => void;
+      onData: (callback: (data: string) => void) => void;
+    };
   };
 }
