@@ -1,8 +1,9 @@
 import { useLayoutEffect, useState } from "react";
 import { createTheme, LoadingOverlay, MantineProvider } from "@mantine/core";
-import Layout from "./components/Layout";
+// import Layout from "./components/Layout";
 import { AppProvider } from "./contexts/app";
 import "@mantine/core/styles.css";
+import Serial from "./components/Serial";
 
 export default function App() {
   const [platform, setPlatform] = useState<OsPlatform | undefined>(undefined);
@@ -27,7 +28,8 @@ export default function App() {
         />
       ) : (
         <AppProvider platform={platform}>
-          <Layout />
+          {/* <Layout /> */}
+          <Serial />
         </AppProvider>
       )}
     </MantineProvider>

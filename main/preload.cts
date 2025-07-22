@@ -1,5 +1,9 @@
-import electron, { IpcRendererEvent } from "electron";
+import electron, { ipcRenderer, IpcRendererEvent } from "electron";
 import type { InvokeResult, IpcApiEventKey } from "./ipc/types";
+import { ReadlineParser, SerialPort } from "serialport";
+
+let port: SerialPort | undefined;
+let parser: ReadlineParser | undefined;
 
 (async () => {
   const ipc = { invoke, on, send };
@@ -20,6 +24,22 @@ import type { InvokeResult, IpcApiEventKey } from "./ipc/types";
           "show-context-menu",
           payload,
         );
+      },
+    },
+    serial: {
+      listPorts: () => ipcRenderer.invoke("serial-listPorts"),
+      connect: (path: string, baudRate: number = 9600) => {
+        return ipcRenderer.invoke("serial-connect", path, baudRate).then(() => {
+          ipcRenderer.invoke("serial-setupEvents");
+        });
+      },
+      sendData: (data: string) => {
+        ipcRenderer.send("serial-sendData", data);
+      },
+      onData: (callback: (data: string) => void) => {
+        ipcRenderer.on("serial-onData", (_event, data: string) => {
+          callback(data);
+        });
       },
     },
   } satisfies Window["api"]);
