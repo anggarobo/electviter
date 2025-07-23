@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import fs from "fs";
+import path from "path";
 import { SerialPort, ReadlineParser } from "serialport";
 
 let port: SerialPort | null = null;
@@ -11,13 +12,20 @@ const RETRY_INTERVAL_MS = 1000;
 
 let retryTimeout: NodeJS.Timeout | null = null;
 
+const logPath = path.join(app.getPath("userData"), "serial.log");
+const logStream = fs.createWriteStream(logPath, { flags: "a" });
+
+function log(msg: string) {
+  const line = `[${new Date().toISOString()}] ${msg}\n`;
+  console.log(line);
+  logStream.write(line);
+}
+
 export default function serial(mainWindow: BrowserWindow) {
   const tryConnect = () => {
     if (!fs.existsSync(PORT_PATH)) {
-      console.warn(
-        `[SerialHelper] Port ${PORT_PATH} belum tersedia. Mencoba ulang...`,
-      );
-      mainWindow.webContents.send("serial-status", "Menunggu port tersedia...");
+      log(`[SerialHelper] Port ${PORT_PATH} belum tersedia. Retry...`);
+      mainWindow.webContents.send("serial-status", "Menunggu port...");
       retryTimeout = setTimeout(tryConnect, RETRY_INTERVAL_MS);
       return;
     }
@@ -31,36 +39,37 @@ export default function serial(mainWindow: BrowserWindow) {
 
     port.open((err) => {
       if (err) {
-        console.error("[SerialHelper] Gagal membuka port:", err.message);
+        log(`[SerialHelper] Gagal membuka port: ${err.message}`);
         mainWindow.webContents.send("serial-status", `Error: ${err.message}`);
         retryTimeout = setTimeout(tryConnect, RETRY_INTERVAL_MS);
         return;
       }
 
-      console.log(`[SerialHelper] Serial port ${PORT_PATH} terbuka.`);
+      log(`[SerialHelper] Serial port ${PORT_PATH} TERBUKA`);
       mainWindow.webContents.send("serial-status", `Terhubung ke ${PORT_PATH}`);
     });
 
     parser.on("data", (data: string) => {
-      console.log(`[SerialHelper] Data diterima: ${data}`);
+      log(`[SerialHelper] Data masuk: ${data}`);
       mainWindow.webContents.send("serial-data", data);
     });
 
     port.on("close", () => {
-      console.warn(
-        "[SerialHelper] Port serial tertutup. Keluar dari aplikasi.",
+      log("[SerialHelper] Port serial DITUTUP. Reconnect dalam 1 detik.");
+      mainWindow.webContents.send(
+        "serial-status",
+        "Port ditutup. Coba sambung ulang...",
       );
-      mainWindow.webContents.send("serial-status", "Serial port tertutup");
-      app.quit(); // atau restart, sesuai kebutuhan
+      retryTimeout = setTimeout(tryConnect, RETRY_INTERVAL_MS);
     });
 
     port.on("error", (err) => {
-      console.error("[SerialHelper] Error serial port:", err.message);
+      log(`[SerialHelper] Error: ${err.message}`);
       mainWindow.webContents.send(
         "serial-status",
         `Serial error: ${err.message}`,
       );
-      app.quit(); // atau restart ulang serial
+      retryTimeout = setTimeout(tryConnect, RETRY_INTERVAL_MS);
     });
   };
 
@@ -70,13 +79,13 @@ export default function serial(mainWindow: BrowserWindow) {
     if (port?.isOpen) {
       port.write(data + "\n", (err) => {
         if (err) {
-          console.error("[SerialHelper] Gagal kirim data:", err.message);
+          log(`[SerialHelper] Gagal kirim data: ${err.message}`);
         } else {
-          console.log(`[SerialHelper] Data terkirim: ${data}`);
+          log(`[SerialHelper] Data terkirim: ${data}`);
         }
       });
     } else {
-      console.warn("[SerialHelper] Port belum terbuka. Tidak bisa kirim.");
+      log("[SerialHelper] Port belum terbuka. Tidak bisa kirim.");
     }
   });
 }
