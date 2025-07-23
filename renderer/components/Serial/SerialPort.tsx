@@ -5,7 +5,7 @@ export default function SerialPort() {
   const [command, setCommand] = useState<string>("");
   const [status, setStatus] = useState<string>("Menghubungkan...");
   const [ports, setPorts] = useState<any[]>([]);
-  console.log({ receivedData, ports });
+  // console.log({ receivedData, ports, status, command });
 
   const getPorts = async () => {
     const port = await window.api.serial.listPorts();
@@ -17,8 +17,14 @@ export default function SerialPort() {
     // Connect ke TCP
     // window.api.serial.connect("127.0.0.1", 5000);
 
+    window.api.serial.listPorts().then((port) => console.log(port));
+    window.api.serial.onPortListChanged((info) => {
+      console.log(info);
+    });
+
     // Listen data masuk
-    window.api.serial.onData((data) => {
+    window.api.serial.onData(({ path, data }) => {
+      console.log(`[${path}] received`, data);
       setReceivedData((prev) => prev + data + "\n");
     });
 
@@ -28,10 +34,10 @@ export default function SerialPort() {
       setStatus(stat);
     });
 
-    // Kirim data tiap 3 detik
+    // Kirim data tiap 5 detik
     const intervalId = setInterval(() => {
-      window.api.serial.sendData("Ping from Renderer!");
-    }, 3000);
+      window.api.serial.sendData("Ping from Renderer!\n");
+    }, 5000);
 
     // Cleanup saat komponen di-unmount
     return () => {
@@ -50,7 +56,7 @@ export default function SerialPort() {
 
   return (
     <div style={{ padding: 20, fontFamily: "Arial" }}>
-      <h1>SerialPort TCP Test</h1>
+      <h1>SerialPort Test</h1>
       <p>Status: {status}</p>
 
       <h3>Data diterima:</h3>
