@@ -31,7 +31,7 @@ import type { InvokeResult, IpcApiEventKey } from "./ipc/types";
       },
       listPorts: () => ipcRenderer.invoke("serial-list"),
       // Kirim data ke serial port via main process
-      sendData: (data: string) => ipcRenderer.send("serial-send", data),
+      sendData: (data) => ipcRenderer.send("serial-send", data),
       onData: (callback: (info: { path: string; data: string }) => void) =>
         ipcRenderer.on("serial-data", (_e, info) => callback(info)),
       // onData: (callback: (data: string) => void) =>
