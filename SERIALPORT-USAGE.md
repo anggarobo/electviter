@@ -63,8 +63,6 @@ This will install Electron and serialport required for the application to work.
 
 ### 3. Start Virtual Serial Ports using socat
 
-This project uses a helper script to simplify launching the socat virtual ports.
-
 Run this command in Terminal 1:
 
 **For Linux & macOS**
@@ -172,11 +170,7 @@ pkill socat
 pkill screen
 ```
 
-- Restart socat:
-
-```bash
-./start-socat.sh
-```
+- [Restart socat](#3-start-virtual-serial-ports-using-socat) 
 
 ## Summary
 
