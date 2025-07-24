@@ -1,9 +1,5 @@
 import electron, { ipcRenderer, IpcRendererEvent } from "electron";
 import type { InvokeResult, IpcApiEventKey } from "./ipc/types";
-import { ReadlineParser, SerialPort } from "serialport";
-
-let port: SerialPort | undefined;
-let parser: ReadlineParser | undefined;
 
 (async () => {
   const ipc = { invoke, on, send };
@@ -27,18 +23,28 @@ let parser: ReadlineParser | undefined;
       },
     },
     serial: {
-      listPorts: () => ipcRenderer.invoke("serial-listPorts"),
+      // listPorts: () => ipcRenderer.invoke("serial-listPorts"),
       connect: (path: string, baudRate: number = 9600) => {
         return ipcRenderer.invoke("serial-connect", path, baudRate).then(() => {
           ipcRenderer.invoke("serial-setupEvents");
         });
       },
+      listPorts: () => ipcRenderer.invoke("serial-list"),
       // Kirim data ke serial port via main process
       sendData: (data: string) => ipcRenderer.send("serial-send", data),
-      onData: (callback: (data: string) => void) =>
-        ipcRenderer.on("serial-data", (_, data) => callback(data)),
+      onData: (callback: (info: { path: string; data: string }) => void) =>
+        ipcRenderer.on("serial-data", (_e, info) => callback(info)),
+      // onData: (callback: (data: string) => void) =>
+      //   ipcRenderer.on("serial-data", (_, data) => callback(data)),
       onStatus: (callback: (status: string) => void) =>
         ipcRenderer.on("serial-status", (_, status) => callback(status)),
+      onPortListChanged: (
+        callback: (info: {
+          added: string[];
+          removed: string[];
+          current: string[];
+        }) => void,
+      ) => ipcRenderer.on("serial-ports-updated", (_e, info) => callback(info)),
     },
     virtualTcp: {
       connect: (host: string, port: number) =>

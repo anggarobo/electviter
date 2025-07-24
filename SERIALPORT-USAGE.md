@@ -1,15 +1,14 @@
 # Electron Serialport with Socat
 
-This project demonstrates how to use **Electron** in conjunction with **serialport** to communicate with a serial device via TCP using **socat**. The application opens a serial port and sends/receives data through it. **Socat** acts as a bridge to map the serial communication to a TCP port.
+This project demonstrates how to use Electron in conjunction with serialport to communicate with virtual serial devices created using socat. The application opens one or more serial ports and sends/receives data through them. Socat is used to create virtual serial port pairs (PTY) that simulate physical serial communication, allowing data to be exchanged between Electron and external tools or terminal sessions.
 
 ## Prerequisites
 
-Before running this application, ensure the following:
+Before running this application, ensure the following tools are installed on your system:
 
-- **socat** is installed and configured to create a TCP bridge to the serial port.
-- **screen** is installed to interact with the virtual serial port.
+### 1. `socat` – Virtual Serial Port Bridge
 
-### Installing `socat`
+Used to create linked pairs of pseudo-terminals (PTY) that behave like serial ports.
 
 - **Linux (Debian/Ubuntu)**:
   ```bash
@@ -23,111 +22,171 @@ Before running this application, ensure the following:
 
 - Windows: Download the Windows binary from socat's website, or use Cygwin to install it.
 
-### Installing `screen`
+### 2. screen – Serial Terminal Tool
 
-- On Linux (Debian/Ubuntu):
+Used to send or read data from the virtual ports manually.
+
+- Linux:
 
   ```bash
-  sudo apt-get install screen
+  sudo apt install screen
   ```
 
-- On macOS (via Homebrew):
+- macOS:
 
   ```bash
   brew install screen
   ```
 
-- On Windows:
-  - You can use Windows Subsystem for Linux (WSL) and follow the Linux instructions, or
-  - Use Cygwin to install screen, or
-  - Install a terminal emulator like Git Bash that includes screen.
-
-Once screen is installed, you can use it to interact with the virtual serial ports created by socat.
+- Windows: Use WSL, Git Bash, or install via Cygwin
 
 ## Getting Started
 
-1. Clone the Repository
+### 1. Clone the Repository
 
-   Clone the project repository to your local machine.
+Clone the project repository to your local machine.
 
-   ```bash
-   git clone https://github.com/anggarobo/electviter.git
-   cd electviter
-   ```
+```bash
+git clone https://github.com/anggarobo/electviter.git
+cd electviter
+```
 
-2. Install Dependencies
+### 2. Install Dependencies
 
-   Install the necessary Node.js dependencies.
+Install the necessary Node.js dependencies.
 
-   ```bash
-   pnpm install
-   ```
+```bash
+pnpm install
+```
 
-   This will install Electron and serialport required for the application to work.
+This will install Electron and serialport required for the application to work.
 
-3. Configure socat for Virtual Serial Ports
+### 3. Start Virtual Serial Ports using socat
 
-   For this setup, we will use **socat** to create two virtual serial ports, `/tmp/ttyV0` and `/tmp/ttyV1`. These two virtual ports will be linked together, so any data sent to one will be received on the other.
+This project uses a helper script to simplify launching the socat virtual ports.
 
-   Run the following command in `Terminal 1` to create the virtual serial ports:
+Run this command in Terminal 1:
 
-   ```bash
-   socat -d -d PTY,link=/tmp/ttyV0,raw,echo=0 PTY,link=/tmp/ttyV1,raw,echo=0
-   ```
+**For Linux & macOS**
 
-   Explanation:
+```bash
+# First pair: /tmp/ttyV0 <--> /tmp/ttyV1
+socat -d -d PTY,raw,echo=0,link=/tmp/ttyV0 PTY,raw,echo=0,link=/tmp/ttyV1 &
 
-   - PTY,link=/tmp/ttyV0,raw,echo=0: Creates the first virtual serial port /tmp/ttyV0.
+# Second pair: /tmp/ttyV2 <--> /tmp/ttyV3
+socat -d -d PTY,raw,echo=0,link=/tmp/ttyV2 PTY,raw,echo=0,link=/tmp/ttyV3 &
+```
 
-   - PTY,link=/tmp/ttyV1,raw,echo=0: Creates the second virtual serial port /tmp/ttyV1.
+**For Windows (WSL or Git Bash)**
 
-   - -d -d: Enables debug output, which helps you monitor the connection between the two ports.
+```bash
+# Run these inside WSL or Git Bash (must support /tmp and socat)
+socat -d -d PTY,raw,echo=0,link=/tmp/ttyV0 PTY,raw,echo=0,link=/tmp/ttyV1 &
+socat -d -d PTY,raw,echo=0,link=/tmp/ttyV2 PTY,raw,echo=0,link=/tmp/ttyV3 &
+```
 
-4. Use screen to Connect to the Virtual Port
+The script will start two socat bridges:
 
-   Once the virtual serial ports are created, open a `second terminal` and use the screen command to connect to /tmp/ttyV0 (or whichever port you prefer):
+- `/tmp/ttyV0` ↔ `/tmp/ttyV1`
 
-   ```bash
-   screen /tmp/ttyV0 9600
-   ```
+- `/tmp/ttyV2` ↔ `/tmp/ttyV3`
 
-   Explanation:
-  
-   - /tmp/ttyV0: The virtual serial port to connect to.
-   - 9600: Baud rate for serial communication. Adjust if needed.
-  
-   After running this command, you can interact with the virtual port via the screen session. Any data sent to /tmp/ttyV1 will be visible in this terminal.
+> These pairs are bidirectional. Sending to one end will deliver data to the other.
 
-5. Running the Electron Application
+Example output:
 
-   Now, you’re ready to run the Electron application. To start the development server using pnpm, execute the following command:
-  
-   ```
-   pnpm run dev
-   ```
-  
-   Explanation:
-  
-   This will start the Electron application in development mode.
-  
-   You will see some logs in the terminal, and the Electron app window will open.
-  
-   In the terminal running pnpm run dev, you’ll also see logs indicating that the app is sending data to the serial port (/tmp/ttyV0) every few seconds.
+```bash
+/tmp/ttyV0 <--> /tmp/ttyV1
+/tmp/ttyV2 <--> /tmp/ttyV3
+```
 
-6. Observe the Messages in screen
+### 4. Send Manual Data to Electron
 
-   While the Electron app is running, it will send messages to /tmp/ttyV0 in regular intervals. In the terminal where you're running screen with /tmp/ttyV0, you should start seeing the messages being printed at regular intervals.
-  
-   For example, the terminal may show:
-  
-   ```bash
-   [SerialHelper] Data masuk: {message}
-   [SerialHelper] Data masuk: {message}
-   [SerialHelper] Data masuk: {message}
-   ```
+The Electron app listens to /tmp/ttyV3 by default.
 
-   This confirms that the Electron app is successfully sending data to the virtual serial port and you can observe the communication in real time.
+To simulate incoming data, use this command in Terminal 2:
 
-7. Exiting screen
+```bash
 
-   To exit screen, press Ctrl + A, then press K, and confirm with "Yes" to terminate the session.
+echo -e "hi from v3\n" > /tmp/ttyV3
+```
+
+> The message "hi from v3" will be received and logged by the Electron app (via /tmp/ttyV2 ↔ /tmp/ttyV3).
+
+Alternatively, you can use screen to send messages manually:
+
+```bash
+screen /tmp/ttyV3 9600
+```
+
+To exit screen:
+
+Press Ctrl + A, then K, then confirm with Y
+
+### 5. Run the Electron App
+
+In Terminal 3, run the app in development mode:
+
+```bash
+pnpm run dev
+```
+
+The app will:
+
+- Open a window
+- Connect to the serial port /tmp/ttyV3
+- Log connection status
+- Send ping messages every 5 seconds
+- Listen for incoming data
+
+Example logs:
+
+```bash
+[SerialHelper] Serial port /tmp/ttyV3 TERBUKA
+[SerialHelper] Data terkirim: Ping from Renderer!
+[SerialHelper] Data masuk: hi from v3
+```
+
+### 6. Observe the Flow
+
+This setup enables a full loop:
+
+- Electron app opens /tmp/ttyV3
+- socat links /tmp/ttyV2 ↔ /tmp/ttyV3
+- You write to /tmp/ttyV3 → Electron receives on /tmp/ttyV3
+
+You may also interact with the other pair (/tmp/ttyV0 ↔ /tmp/ttyV1) the same way.
+
+### 7. Troubleshooting
+
+- Port busy?
+
+```bash
+lsof /tmp/ttyV3
+```
+
+- Terminate stuck processes:
+
+```bash
+pkill socat
+pkill screen
+```
+
+- Restart socat:
+
+```bash
+./start-socat.sh
+```
+
+## Summary
+
+| Component     | Role                                     |
+| ------------- | ---------------------------------------- |
+| Electron      | Serial port client (receiver/sender)     |
+| socat Creates | linked virtual serial ports              |
+| /tmp/ttyV3    | Port opened by Electron (via serialport) |
+| /tmp/ttyV2    | Port you send data to (test simulator)   |
+
+## License
+
+MIT © 2025 [anggarobo](https://github.com/anggarobo/)

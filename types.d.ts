@@ -78,9 +78,16 @@ type ApiEventKey<K = unknown, V = unknown> = keyof ApiEvent<K, V>;
 interface SerialApi {
   listPorts: () => Promise<import("serialport").PortInfo[]>;
   connect: (path: string, baudRate?: number) => void;
-  onData: (callback: (data: string) => void) => void;
+  onData: (callback: (data: any) => void) => void;
   onStatus: (callback: (data: string) => void) => void;
   sendData: (data: string) => void;
+  onPortListChanged: (
+    callback: (info: {
+      added: string[];
+      removed: string[];
+      current: string[];
+    }) => void,
+  ) => void;
 }
 interface Window {
   electron: {
