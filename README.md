@@ -21,28 +21,22 @@ electviter/
 │   └── tsconfig.base.json
 │
 ├── main/   # Electron main process
-│   ├── ipc/
-│   │   ├── init.ts
-│   │   ├── main.ts
-│   │   ├── renderer.cts
-│   │   └── types.ts
+│   ├── modules/
+│   │   ├── menu.ts
+│   │   ├── serial.ts
+│   │   └── tray.ts
 │   ├── utils/
 │   │   ├── env.ts
-│   │   ├── fm.ts
-│   │   └── os.ts
+│   │   ├── os.ts
+│   │   └── path.ts
 │   ├── main.ts
-│   ├── pathResolver.ts
 │   ├── preload.ts
 │   ├── README.md
-│   ├── resourceManager.ts
-│   ├── tray.ts
 │   └── tsconfig.json
 │
 ├── renderer/ # Electron renderer process
 │   ├── components/
 │   ├── contexts/
-│   ├── hooks/
-│   ├── types/
 │   ├── App.css
 │   ├── App.tsx
 │   ├── index.tsx
@@ -63,23 +57,7 @@ electviter/
 
 ## 🚀 Getting Started
 
-Install dependencies using pnpm:
-
-```bash
-pnpm install
-```
-
-Start the react-app in development mode:
-
-```bash
-pnpm run dev:react
-```
-
-Start the electron-app in development mode:
-
-```bash
-pnpm run dev:electron
-```
+[Instructions for use](./IFU.md)
 
 ## 📦 Building & Packaging
 

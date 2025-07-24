@@ -170,7 +170,7 @@ pkill socat
 pkill screen
 ```
 
-- [Restart socat](#3-start-virtual-serial-ports-using-socat) 
+- [Restart socat](#3-start-virtual-serial-ports-using-socat)
 
 ## Summary
 
