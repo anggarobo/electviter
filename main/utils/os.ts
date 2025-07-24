@@ -16,7 +16,3 @@ const platform: OsPlatform = {
 };
 
 export default { ...platform };
-
-// export default function osx() {
-//     apiIpcMainHandle("platform", () => os)
-// }

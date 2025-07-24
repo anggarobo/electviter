@@ -3,7 +3,6 @@ import fs from "fs";
 import path from "path";
 import { SerialPort, ReadlineParser } from "serialport";
 
-let port: SerialPort | null = null;
 let lastPortPaths: string[] = [];
 const INPUT_PATHS = ["/tmp/ttyV0", "/tmp/ttyV2"];
 const OUTPUT_PATHS = ["/tmp/ttyV1", "/tmp/ttyV3"];

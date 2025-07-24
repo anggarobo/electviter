@@ -1,6 +1,6 @@
 import path from "path";
 import { app } from "electron";
-import env from "./utils/env.js";
+import env from "./env.js";
 
 function getPreloadPath() {
   return path.join(
