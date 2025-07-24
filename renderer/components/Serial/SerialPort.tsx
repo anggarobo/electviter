@@ -1,14 +1,17 @@
+import { Button, Flex, Select, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 
 export default function SerialPort() {
   const [receivedData, setReceivedData] = useState<string>("");
   const [command, setCommand] = useState<string>("");
-  const [status, setStatus] = useState<string>("Menghubungkan...");
-  const [ports, setPorts] = useState<any[]>([]);
+  const [path, setPath] = useState<string>("");
+  const [status, setStatus] = useState<string>("Connecting...");
+  const [ports, setPorts] = useState<any>(undefined);
   // console.log({ receivedData, ports, status, command });
 
   const getPorts = async () => {
     const port = await window.api.serial.listPorts();
+    if (port) setStatus("Connected");
     setPorts(port);
   };
 
@@ -35,31 +38,48 @@ export default function SerialPort() {
     });
 
     // Kirim data tiap 5 detik
-    const intervalId = setInterval(() => {
-      window.api.serial.sendData("Ping from Renderer!\n");
-    }, 5000);
+    // const intervalId = setInterval(() => {
+    //   window.api.serial.sendData("Ping from Renderer!\n");
+    // }, 5000);
 
     // Cleanup saat komponen di-unmount
     return () => {
-      clearInterval(intervalId);
+      // clearInterval(intervalId);
       // window.api.serial.disconnect();
       // setStatus("Terputus dari TCP.");
     };
   }, []);
 
-  const sendCommand = () => {
+  const onSend: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
     if (command.trim() !== "") {
-      window.api.serial.sendData(command.trim());
+      window.api.serial.sendData({
+        data: command.trim(),
+        path: path,
+      });
       setCommand("");
     }
   };
 
+  console.log({ ports });
+
   return (
     <div style={{ padding: 20, fontFamily: "Arial" }}>
       <h1>SerialPort Test</h1>
-      <p>Status: {status}</p>
+      {ports ? (
+        <div>
+          <p>Ports:</p>
+          <ul>
+            {ports?.output?.map((item: { path: string; source: string }) => (
+              <li key={item?.path}>{item?.path} connected!</li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p>{status}</p>
+      )}
 
-      <h3>Data diterima:</h3>
+      <h3>Received Data:</h3>
       <div
         style={{
           minHeight: 50,
@@ -70,21 +90,33 @@ export default function SerialPort() {
           whiteSpace: "pre-wrap",
         }}
       >
-        {receivedData || "Belum ada data"}
+        {receivedData || "Empty!"}
       </div>
 
-      <h3>Kirim Perintah:</h3>
-      <input
-        type="text"
-        value={command}
-        onChange={(e) => setCommand(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && sendCommand()}
-        placeholder="Ketik perintah..."
-        style={{ padding: 8, width: "70%", marginRight: 10 }}
-      />
-      <button onClick={sendCommand} style={{ padding: "8px 16px" }}>
-        Kirim
-      </button>
+      <h3>Send a Command:</h3>
+      <form onSubmit={onSend} style={{ width: "70%" }}>
+        <Flex gap="md" direction="column">
+          <Flex gap="md">
+            <TextInput
+              label="Command"
+              placeholder="Input Command"
+              onChange={(e) => setCommand(e.target.value)}
+              flex={1}
+              withAsterisk
+            />
+            <Select
+              label="Port"
+              placeholder="Select Port"
+              data={["/tmp/ttyV1", "/tmp/ttyV3"]}
+              onChange={(p) => setPath(p || "")}
+              withAsterisk
+            />
+          </Flex>
+          <Button disabled={path == ""} w="100" type="submit">
+            Send
+          </Button>
+        </Flex>
+      </form>
     </div>
   );
 }

@@ -34,7 +34,7 @@ export default function Serial() {
 
   const sendCommand = () => {
     if (connectedPort && command.trim() !== "") {
-      window.api.serial.sendData(command.trim());
+      // window.api.serial.sendData(command.trim());
       setCommand("");
     }
   };

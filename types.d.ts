@@ -80,7 +80,7 @@ interface SerialApi {
   connect: (path: string, baudRate?: number) => void;
   onData: (callback: (data: any) => void) => void;
   onStatus: (callback: (data: string) => void) => void;
-  sendData: (data: string) => void;
+  sendData: (data: { path: string; data: string }) => void;
   onPortListChanged: (
     callback: (info: {
       added: string[];

@@ -4,21 +4,20 @@ import path from "path";
 import { SerialPort, ReadlineParser } from "serialport";
 
 let port: SerialPort | null = null;
-let parser: ReadlineParser | null = null;
 let lastPortPaths: string[] = [];
-
-const PORT_PATH = "/tmp/ttyV1"; // sesuaikan dengan socat-mu
+const INPUT_PATHS = ["/tmp/ttyV0", "/tmp/ttyV2"];
+const OUTPUT_PATHS = ["/tmp/ttyV1", "/tmp/ttyV3"];
 const BAUD_RATE = 9600;
 const RETRY_INTERVAL_MS = 1000;
-
 let retryTimeout: NodeJS.Timeout | null = null;
 
 const logPath = path.join(app.getPath("userData"), "serial.log");
 const logStream = fs.createWriteStream(logPath, { flags: "a" });
 
-function log(msg: string) {
+function log(msg: string, isError?: boolean) {
   const line = `[${new Date().toISOString()}] ${msg}`;
-  console.log(line);
+  if (isError) console.error(line);
+  else console.log(line);
   logStream.write(line + "\n");
 }
 
@@ -26,118 +25,132 @@ type SerialInstance = {
   port: SerialPort;
   parser: ReadlineParser;
 };
-
-const portInstances = new Map<string, SerialInstance>();
+const inputPortInstances = new Map<string, SerialInstance>();
+const outputPortInstances = new Map<string, SerialPort>();
 
 export function initMultiSerial(mainWindow: BrowserWindow, paths: string[]) {
-  for (const path of paths) {
-    if (!fs.existsSync(path)) continue;
+  for (const p of paths) {
+    const retry = (attempt: number = 1) => {
+      // if (!fs.existsSync(path)) continue;
+      if (!fs.existsSync(p)) {
+        log(`[SerialHelper] Port ${p} is unavailable. Retry...`);
+        mainWindow.webContents.send("serial-status", "Connecting...");
 
-    const port = new SerialPort({ path, baudRate: 9600, autoOpen: false });
-    const parser = port.pipe(new ReadlineParser({ delimiter: "\n" }));
-
-    port.open((err) => {
-      if (err) {
-        console.error(`[${path}] Gagal membuka: ${err.message}`);
+        if (attempt < 3) {
+          setTimeout(() => retry(attempt + 1), RETRY_INTERVAL_MS);
+        }
         return;
       }
 
-      console.log(`[${path}] TERBUKA`);
-      mainWindow.webContents.send("serial-status", `Terhubung ke ${path}`);
+      const port = new SerialPort({
+        path: p,
+        baudRate: BAUD_RATE,
+        autoOpen: false,
+      });
+      const parser = port.pipe(new ReadlineParser({ delimiter: "\n" }));
+
+      port.open((err) => {
+        if (err) {
+          log(
+            `Failed to open Port [${p}]; error: ${err.message}; attempt: ${attempt}`,
+            true,
+          );
+
+          if (attempt < 3) {
+            setTimeout(() => retry(attempt + 1), RETRY_INTERVAL_MS);
+          }
+          return;
+        }
+
+        log(`INPUT Port [${p}] OPEN`);
+        mainWindow.webContents.send("serial-status", `Connected to ${p}`);
+      });
+
+      port.on("data", (buf: Buffer) => {
+        log(`[${p}] 🔸 RAW: ${buf.toString()}`);
+      });
+
+      parser.on("data", (data: string) => {
+        log(`[${p}] ✅ Data received: ${data}`);
+        mainWindow.webContents.send("serial-data", { p, data });
+      });
+
+      port.on("close", () => {
+        log(`INPUT Port [${p}] CLOSED`);
+      });
+
+      port.on("error", (err) => {
+        log(`[SerialHelper] Error: ${err.message}; attempt: ${attempt}`, true);
+        mainWindow.webContents.send(
+          "serial-status",
+          `Serial error: ${err.message}`,
+        );
+
+        if (attempt < 3) {
+          setTimeout(() => retry(attempt + 1), RETRY_INTERVAL_MS);
+        }
+      });
+
+      inputPortInstances.set(p, { port, parser });
+    };
+
+    retry();
+  }
+}
+
+function initOutputSerial(paths: string[]) {
+  for (const p of paths) {
+    if (!fs.existsSync(p)) {
+      log(`[SerialHelper] OUTPUT Port ${p} is unavailable. Skipping...`);
+      continue;
+    }
+
+    const port = new SerialPort({
+      path: p,
+      baudRate: BAUD_RATE,
     });
 
-    port.on("data", (buf: Buffer) => {
-      console.log(`[${path}] 🔸 RAW: ${buf.toString()}`);
+    port.on("open", () => {
+      log(`OUTPUT Port [${p}] OPEN`);
     });
 
-    parser.on("data", (data: string) => {
-      console.log(`[${path}] ✅ Data masuk: ${data}`);
-      mainWindow.webContents.send("serial-data", { path, data });
+    port.on("error", (err) => {
+      log(`[SerialHelper] Error OUTPUT ${p}: ${err.message}`);
     });
 
     port.on("close", () => {
-      console.log(`[${path}] DITUTUP`);
+      log(`OUTPUT Port [${p}] OUTPUT CLOSED`);
     });
 
-    portInstances.set(path, { port, parser });
+    outputPortInstances.set(p, port);
   }
 }
 
 export default function serial(mainWindow: BrowserWindow) {
-  const tryConnect = () => {
-    if (!fs.existsSync(PORT_PATH)) {
-      log(`[SerialHelper] Port ${PORT_PATH} belum tersedia. Retry...`);
-      mainWindow.webContents.send("serial-status", "Menunggu port...");
-      retryTimeout = setTimeout(tryConnect, RETRY_INTERVAL_MS);
-      return;
-    }
+  startSerialWatcher(mainWindow);
+  initMultiSerial(mainWindow, INPUT_PATHS);
+  initOutputSerial(OUTPUT_PATHS);
 
-    port = new SerialPort({
-      path: PORT_PATH,
-      baudRate: BAUD_RATE,
-      autoOpen: false,
-    });
-    parser = port.pipe(new ReadlineParser({ delimiter: "\n" }));
+  ipcMain.on(
+    "serial-send",
+    (_e, { path: targetPath, data }: { path: string; data: string }) => {
+      const port = outputPortInstances.get(targetPath);
 
-    port.open((err) => {
-      if (err) {
-        log(`[SerialHelper] Gagal membuka port: ${err.message}`);
-        mainWindow.webContents.send("serial-status", `Error: ${err.message}`);
-        retryTimeout = setTimeout(tryConnect, RETRY_INTERVAL_MS);
-        return;
+      if (port?.isOpen) {
+        port.write(data, (err) => {
+          if (err) {
+            log(
+              `[SerialHelper] failed to send to ${targetPath}: ${err.message}`,
+            );
+          } else {
+            log(`[SerialHelper] Data sent to ${targetPath}: ${data}`);
+          }
+        });
+      } else {
+        log(`[SerialHelper] Port OUTPUT ${targetPath} is not open yet.`);
       }
-
-      log(`[SerialHelper] Serial port ${PORT_PATH} TERBUKA`);
-      mainWindow.webContents.send("serial-status", `Terhubung ke ${PORT_PATH}`);
-    });
-
-    port.on("data", (buffer) => {
-      const raw = buffer.toString();
-      log(`[SerialHelper] 🔸 RAW: ${raw}`);
-    });
-    parser.on("data", (data) => {
-      log(`[SerialHelper] ✅ Parsed: ${data}`);
-      mainWindow.webContents.send("serial-data", data);
-    });
-    // parser.on("data", (data: Buffer) => {
-    //   log(`[SerialHelper] Data masuk: ${data.toString()}`);
-    //   mainWindow.webContents.send("serial-data", data);
-    // });
-
-    port.on("close", () => {
-      log("[SerialHelper] Port serial DITUTUP. Reconnect dalam 1 detik.");
-      mainWindow.webContents.send(
-        "serial-status",
-        "Port ditutup. Coba sambung ulang...",
-      );
-      retryTimeout = setTimeout(tryConnect, RETRY_INTERVAL_MS);
-    });
-
-    port.on("error", (err) => {
-      log(`[SerialHelper] Error: ${err.message}`);
-      mainWindow.webContents.send(
-        "serial-status",
-        `Serial error: ${err.message}`,
-      );
-      retryTimeout = setTimeout(tryConnect, RETRY_INTERVAL_MS);
-    });
-  };
-
-  tryConnect();
-
-  ipcMain.on("serial-send", (_e, data: string) => {
-    if (port?.isOpen) {
-      port.write(data, (err) => {
-        if (err) {
-          log(`[SerialHelper] Gagal kirim data: ${err.message}`);
-        } else {
-          log(`[SerialHelper] Data terkirim: ${data}`);
-        }
-      });
-    } else {
-      log("[SerialHelper] Port belum terbuka. Tidak bisa kirim.");
-    }
-  });
+    },
+  );
 
   ipcMain.handle("serial-list", async () => {
     try {
@@ -145,41 +158,34 @@ export default function serial(mainWindow: BrowserWindow) {
 
       return ports;
     } catch (err: any) {
-      log(`[SerialHelper] Gagal mendapatkan daftar port: ${err.message}`);
+      log(`[SerialHelper] Failed to get port list: ${err.message}`);
       return [];
     }
   });
-
-  startSerialWatcher(mainWindow);
-  initMultiSerial(mainWindow, ["/tmp/ttyV0", "/tmp/ttyV2"]);
 }
 
 async function serialList(): Promise<{
   standard: Array<{ path: string; source: string }>;
-  manual: Array<{ path: string; source: string }>;
+  input: Array<{ path: string; source: string }>;
+  output: Array<{ path: string; source: string }>;
 }> {
   const standardPorts = await SerialPort.list();
   const standardList = standardPorts.map((p) => ({
-    ...p,
     path: p.path,
     source: "system",
   }));
 
-  const manualPaths = ["/tmp/ttyV0", "/tmp/ttyV1"];
-  const validatedManualPorts: Array<{ path: string; source: string }> = [];
+  const inputList = INPUT_PATHS.filter(fs.existsSync).map((p) => ({
+    path: p,
+    source: "input",
+  }));
 
-  for (const p of manualPaths) {
-    const exists = fs.existsSync(p);
-    if (!exists) continue;
+  const outputList = OUTPUT_PATHS.filter(fs.existsSync).map((p) => ({
+    path: p,
+    source: "output",
+  }));
 
-    // const valid = await isPortValid(p);
-    // if (valid) {
-    //   validatedManualPorts.push({ path: p, source: "manual" });
-    // }
-    validatedManualPorts.push({ path: p, source: "manual" });
-  }
-
-  return { standard: standardList, manual: validatedManualPorts };
+  return { standard: standardList, input: inputList, output: outputList };
 }
 
 function startSerialWatcher(mainWindow: BrowserWindow) {
@@ -187,7 +193,6 @@ function startSerialWatcher(mainWindow: BrowserWindow) {
     const ports = await SerialPort.list();
     const currentPaths = ports.map((p) => p.path);
 
-    // Deteksi perubahan
     const added = currentPaths.filter((p) => !lastPortPaths.includes(p));
     const removed = lastPortPaths.filter((p) => !currentPaths.includes(p));
 
@@ -199,7 +204,20 @@ function startSerialWatcher(mainWindow: BrowserWindow) {
       });
       lastPortPaths = currentPaths;
     }
-  }, 1000); // 1 detik polling
+  }, 1000);
+}
+
+export function close() {
+  for (const [p, instance] of inputPortInstances.entries()) {
+    if (instance.port.isOpen) instance.port.close();
+  }
+
+  for (const [p, port] of outputPortInstances.entries()) {
+    if (port.isOpen) port.close();
+  }
+
+  inputPortInstances.clear();
+  outputPortInstances.clear();
 }
 
 // async function isPortValid(path: string): Promise<boolean> {
@@ -221,8 +239,3 @@ function startSerialWatcher(mainWindow: BrowserWindow) {
 //     });
 //   });
 // }
-
-export function close() {
-  if (retryTimeout) clearTimeout(retryTimeout);
-  if (port && port.isOpen) port.close();
-}
