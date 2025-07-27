@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  type PropsWithChildren,
-} from "react";
+import { createContext, useContext, type PropsWithChildren } from "react";
 
 export interface HistoryPath {
   path: string;
@@ -11,47 +6,18 @@ export interface HistoryPath {
 }
 
 export interface OsPath {
-  username: string;
-  history: HistoryPath[];
-  path: string;
   os: OsPlatform;
-  selected: Dir<string>[];
-  search: {
-    input: string;
-    isActive: boolean;
-  };
-  view: "list" | "icon" | "compact";
-  setHistory: React.Dispatch<React.SetStateAction<HistoryPath[]>>;
-  setPath: React.Dispatch<React.SetStateAction<string>>;
-  setSearch: React.Dispatch<React.SetStateAction<OsPath["search"]>>;
-  setSelected: React.Dispatch<React.SetStateAction<Dir[]>>;
-  setView: (value: OsPath["view"]) => void;
 }
 
-const __VIEW_EXP__ = "__view_exp__";
-const VIEW_EXP = localStorage.getItem(__VIEW_EXP__) as OsPath["view"];
-const initView: OsPath["view"] = VIEW_EXP || "compact";
-
 const initContext: OsPath = {
-  username: "",
-  history: [],
-  path: "/",
   os: {
     homepath: "/",
     isLinux: false,
     isMac: false,
     isWindows: false,
-    platform: "",
+    platform: "linux",
     username: "",
   },
-  selected: [],
-  search: { input: "", isActive: false },
-  view: initView,
-  setHistory: () => {},
-  setPath: () => {},
-  setSearch: () => {},
-  setSelected: () => {},
-  setView: () => {},
 };
 
 const AppContext = createContext(initContext);
@@ -60,36 +26,10 @@ export function AppProvider({
   children,
   platform,
 }: PropsWithChildren<{ platform: OsPlatform }>) {
-  const [path, setPath] = useState(
-    [platform.homepath, platform.username].join("/"),
-  );
-  const [history, setHistory] = useState<HistoryPath[]>([
-    { path: [platform.homepath, platform.username].join("/"), isActive: true },
-  ]);
-  const [selected, setSelected] = useState(initContext.selected);
-  const [search, setSearch] = useState(initContext.search);
-  const [view, setView] = useState(initView);
-
-  const setVewExp = (value: OsPath["view"]) => {
-    setView(value);
-    localStorage.setItem(__VIEW_EXP__, value);
-  };
-
   return (
     <AppContext.Provider
       value={{
-        username: platform.username,
-        history,
-        path,
         os: platform,
-        search,
-        selected,
-        view,
-        setHistory,
-        setPath,
-        setSearch,
-        setSelected,
-        setView: setVewExp,
       }}
     >
       {children}

@@ -1,13 +1,20 @@
-import { app, BrowserWindow, dialog, globalShortcut } from "electron";
-import { pollResources } from "./resourceManager.js";
-import { ASSETS_PATH, INDEX_PATH, PRELOAD_PATH } from "./pathResolver.js";
-import { createMenu } from "./menu.js";
-import { createTray } from "./tray.js";
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  globalShortcut,
+  ipcMain,
+  WebFrameMain,
+} from "electron";
+import { ASSETS_PATH, INDEX_PATH, PRELOAD_PATH } from "./utils/path.js";
+import { createMenu } from "./modules/menu.js";
+import { createTray } from "./modules/tray.js";
 import path from "path";
-import initIpc from "./ipc/init.js";
 import env from "./utils/env.js";
 // import virtualTcp from "./tcp.js";
-import serial, { close as serialClose } from "./serial.js";
+import serial, { close as serialClose } from "./modules/serial.js";
+import { pathToFileURL } from "url";
+import osp from "./utils/os.js";
 
 app.on("ready", () => {
   const mainWindow = new BrowserWindow({
@@ -28,9 +35,6 @@ app.on("ready", () => {
   // virtualTcp(mainWindow)
   serial(mainWindow);
 
-  // mainWindow.webContents.openDevTools()
-  pollResources(mainWindow);
-
   createTray(mainWindow);
   handleCloseEvents(mainWindow);
   createMenu(mainWindow);
@@ -45,8 +49,20 @@ app.on("ready", () => {
     mainWindow.webContents.toggleDevTools();
   });
 
-  initIpc(mainWindow);
+  ipcMain.handle("platform", (e) => {
+    if (e.senderFrame) validateEventFrame(e.senderFrame);
+    return osp;
+  });
 });
+
+export function validateEventFrame(frame: WebFrameMain) {
+  if (env.isDev && new URL(frame.url).host === "localhost:5777") {
+    return;
+  }
+  if (frame.url !== pathToFileURL(INDEX_PATH).toString()) {
+    throw new Error("Malicious event");
+  }
+}
 
 app.on("will-quit", () => {
   // unregister all shortcut when app quits
