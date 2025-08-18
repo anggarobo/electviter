@@ -3,6 +3,7 @@ import { createTheme, LoadingOverlay, MantineProvider } from "@mantine/core";
 import { AppProvider } from "./contexts/app";
 import "@mantine/core/styles.css";
 import SerialPort from "./components/Serial";
+import Gate from "./components/Gate";
 
 export default function App() {
   const [platform, setPlatform] = useState<OsPlatform | undefined>(undefined);
@@ -31,7 +32,8 @@ export default function App() {
         />
       ) : (
         <AppProvider platform={platform}>
-          <SerialPort />
+          {/* <SerialPort /> */}
+          <Gate />
         </AppProvider>
       )}
     </MantineProvider>
