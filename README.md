@@ -251,6 +251,7 @@ pnpm run dist:win
 ![image info](./showcases/Screenshot_2025-07-25_05-43-31.png)
 ![image info](./showcases/Screenshot_2025-07-25_05-44-48.png)
 ![image info](./showcases/Screenshot_2025-07-25_05-49-25.png)
+![image info](./showcases/Screenshot_2025-08-20_04-08-42.png)
 
 ## 📚 References
 
